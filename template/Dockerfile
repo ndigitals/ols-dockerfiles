@@ -1,7 +1,9 @@
 ARG OLS_VERSION
 ARG PHP_VERSION
+ARG PHP_MAJOR_VERSION
+ARG PHP_MINOR_VERSION
 
-FROM arm64v8/wordpress:cli-php$PHP_VERSION as wp-cli
+FROM arm64v8/wordpress:cli-php$PHP_MAJOR_VERSION.$PHP_MINOR_VERSION as wp-cli
 
 FROM arm64v8/ubuntu:22.04
 
@@ -12,8 +14,6 @@ LABEL org.opencontainers.image.vendor="Nolte Digital Solutions"
 LABEL org.opencontainers.image.licenses=MIT
 
 ENV PHP_VERSION=$PHP_VERSION
-
-RUN IFS=. read PHP_MAJOR_VERSION PHP_MINOR_VERSION PHP_PATCH_VERSION <<<"$PHP_VERSION"
 
 RUN WORK_DIR=`pwd`
 
