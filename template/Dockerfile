@@ -1,27 +1,52 @@
-FROM ubuntu:22.04
-
 ARG OLS_VERSION
 ARG PHP_VERSION
 
+FROM arm64v8/wordpress:cli-php$PHP_VERSION as wp-cli
 
-RUN apt-get update && apt-get install wget curl cron tzdata -y
+FROM arm64v8/ubuntu:22.04
 
-RUN wget https://openlitespeed.org/preuse/openlitespeed-$OLS_VERSION.tgz && \
-    tar xzf openlitespeed-$OLS_VERSION.tgz && cd openlitespeed && ./install.sh && \
-    echo 'cloud-docker' > /usr/local/lsws/PLAT && rm -rf /openlitespeed && rm /openlitespeed-$OLS_VERSION.tgz
+LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
+LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
+LABEL org.opencontainers.image.source=https://github.com/ndigitals/ols-dockerfiles
+LABEL org.opencontainers.image.vendor="Nolte Digital Solutions"
+LABEL org.opencontainers.image.licenses=MIT
 
-RUN apt-get install mysql-client $PHP_VERSION $PHP_VERSION-common $PHP_VERSION-mysql $PHP_VERSION-opcache \
-    $PHP_VERSION-curl $PHP_VERSION-imagick $PHP_VERSION-redis $PHP_VERSION-memcached $PHP_VERSION-intl -y
+ENV PHP_VERSION=$PHP_VERSION
 
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then apt-get install $PHP_VERSION-json -y; fi"]
+RUN IFS=. read PHP_MAJOR_VERSION PHP_MINOR_VERSION PHP_PATCH_VERSION <<<"$PHP_VERSION"
+
+RUN WORK_DIR=`pwd`
+
+# Install require build packages.
+RUN apt-get update && \
+    apt-get install -y \
+    wget curl cron tzdata mysql-client \
+    build-essential pkg-config openssl libssl-dev openssl-blacklist openssl-blacklist-extra \
+    bison autoconf automake libtool re2c flex libxml2-dev libssl-dev libbz2-dev libcurl4-openssl-dev \
+    libdb5.1-dev libjpeg-dev libpng12-dev libXpm-dev libfreetype6-dev libt1-dev libgmp3-dev \
+    libc-client2007e-dev libldap2-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev \
+    libmysqlclient-dev libncurses5-dev libpcre3-dev unixODBC-dev libsqlite0-dev libaspell-dev \
+    libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libt1-dev
+
+# Build LSPHP from source.
+RUN wget https://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
+    tar xzf php-$PHP_VERSION.tar.gz && cd php-$PHP_VERSION && \
+    ./configure  "--prefix=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}" '--with-libdir=lib64' '--with-zlib' '--with-gd' '--enable-shmop' '--enable-sockets' '--enable-sysvsem' '--enable-sysvshm' '--with-curl' '--with-openssl' '--with-gettext' '--with-mcrypt' '--enable-mbstring=all' '--enable-mbregex' '--with-png-dir=/usr' '--with-jpeg-dir=/usr' '--with-kerberos' '--enable-ftp' '--with-imap=/usr' '--with-imap-ssl' '--with-mysql=/usr' '--with-mysqli=/usr/bin/mysql_config' '--enable-pcntl' '--with-freetype-dir=/usr' '--with-pdo-mysql=/usr' '--with-litespeed' && \
+    make && make install && cd $WORK_DIR && rm -rf ./php-$PHP_VERSION && rm ./php-$PHP_VERSION.tar.gz
+
+# Build OpenLiteSpeed from source.
+RUN wget https://openlitespeed.org/packages/openlitespeed-$OLS_VERSION.src.tgz && \
+    tar xzf openlitespeed-$OLS_VERSION.src.tgz && cd openlitespeed-$OLS_VERSION && \
+    ./build.sh && ./install.sh && cd $WORK_DIR && \
+    echo 'cloud-docker' > /usr/local/lsws/PLAT && rm -rf ./openlitespeed-$OLS_VERSION && rm ./openlitespeed-$OLS_VERSION.tgz
 
 RUN wget -O /usr/local/lsws/admin/misc/lsup.sh \
     https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh && \
     chmod +x /usr/local/lsws/admin/misc/lsup.sh
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-	chmod +x wp-cli.phar && mv wp-cli.phar /usr/bin/wp && \
-	ln -s /usr/local/lsws/$PHP_VERSION/bin/php /usr/bin/php
+COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/local/bin/wp"]
+
+RUN ln -s /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php /usr/bin/php
 
 RUN wget -O -  https://get.acme.sh | sh
 
@@ -37,12 +62,13 @@ RUN /usr/local/lsws/bin/setup_docker.sh && rm /usr/local/lsws/bin/setup_docker.s
 RUN chown 999:999 /usr/local/lsws/conf -R
 RUN cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/
 RUN cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/
-#RUN sed -i "s|fcgi-bin/lsphp|/usr/local/lsws/$PHP_VERSION/bin/lsphp|g" /usr/local/lsws/conf/httpd_config.conf
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp8* ]]; then ln -sf /usr/local/lsws/$PHP_VERSION/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8; fi"]
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp8* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp; fi"]
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then ln -sf /usr/local/lsws/$PHP_VERSION/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp7; fi"]
-RUN ["/bin/bash", "-c", "if [[ $PHP_VERSION == lsphp7* ]]; then ln -sf /usr/local/lsws/fcgi-bin/lsphp7 /usr/local/lsws/fcgi-bin/lsphp; fi"]
+RUN ln -sf /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8
+RUN ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp
+
 COPY entrypoint.sh /entrypoint.sh
+
 RUN chmod +x /entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
+
 WORKDIR /var/www/vhosts/
