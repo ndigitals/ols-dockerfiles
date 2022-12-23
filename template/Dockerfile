@@ -3,9 +3,9 @@ ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 
-FROM arm64v8/wordpress:cli-php$PHP_MAJOR_VERSION.$PHP_MINOR_VERSION as wp-cli
+FROM arm64v8/wordpress:cli-php$PHP_MAJOR_VERSION.$PHP_MINOR_VERSION AS wp-cli
 
-FROM arm64v8/debian:11-slim
+FROM arm64v8/debian:11-slim AS build-setup
 
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
@@ -24,18 +24,19 @@ ENV BUILD_PACKAGES=${BUILD_PACKAGES}
 
 # Install require build packages.
 RUN apt-get update && \
-    apt-get install -y ${BUILD_PACKAGES} wget curl cron tzdata mariadb-client \
+    apt-get install -y $BUILD_PACKAGES wget curl cron tzdata mariadb-client \
     pkg-config openssl libgssapi-krb5-2 libkrb5-3 libexpat1 libc-client2007e libdbd-freetds freetds-bin \
-
 
 # Fix FreeTDS missing libraries.
 RUN ln -s /usr/lib/aarch64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a && \
     ln -s /usr/lib/aarch64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so
 
+FROM build-setup AS release
+
 # Build LSPHP from source.
 RUN cd /tmp && wget https://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
     tar xzf php-$PHP_VERSION.tar.gz && cd php-$PHP_VERSION && \
-    ./configure  "--prefix=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}" '--enable-cgi' '--enable-cli' '--enable-phpdbg=no' '--enable-litespeed' "--with-config-file-path=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/litespeed/" "--with-config-file-scan-dir=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/mods-available/" '--build=aarch64-linux-gnu' '--host=aarch64-linux-gnu' '--libdir=${prefix}/lib/php' '--libexecdir=${prefix}/lib/php' "--datadir=${prefix}/share/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}" "--program-suffix=${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}" '--disable-all' '--disable-debug' '--disable-rpath' '--disable-static' '--with-pic' '--with-layout=GNU' '--without-pear' '--enable-bcmath' '--enable-calendar' '--enable-dom' '--with-enchant' '--enable-exif' '--with-gettext' '--with-gmp' '--enable-ftp' '--with-iconv' '--enable-mbregex' '--enable-mbstring' '--enable-mysqlnd-compression-support' '--with-zlib' '--with-openssl=yes' '--with-libedit' '--with-libxml' '--with-bz2' '--enable-soap' '--enable-sockets' '--with-xsl' '--with-mhash=yes' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--with-zip' '--with-sodium' '--with-password-argon2' '--enable-gd' '--with-jpeg' '--with-xpm' '--with-webp' '--with-freetype' '--with-mysql-sock=/var/run/mysqld/mysqld.sock' '--disable-dtrace' '--enable-pdo' '--enable-mysqlnd' '--enable-pcntl' '--with-sqlite3=shared,/usr' '--with-pdo-sqlite=shared,/usr' '--with-pdo-dblib=shared,/usr' '--with-ldap=shared,/usr' '--with-ldap-sasl=/usr' '--enable-intl=shared' '--with-snmp=shared,/usr' '--with-pgsql=shared,/usr' '--with-pdo-pgsql=shared,/usr' '--enable-huge-code-pages' '--with-imap=shared,/usr' '--with-kerberos' '--with-imap-ssl=yes' '--with-mysqli=shared,mysqlnd' '--with-pdo-mysql=shared,mysqlnd' '--with-tidy=shared,/usr' '--with-pspell=shared,/usr' '--with-curl=shared,/usr' && \
+    ./configure "--prefix=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}" '--enable-cgi' '--enable-cli' '--enable-phpdbg=no' '--enable-litespeed' "--with-config-file-path=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/litespeed/" "--with-config-file-scan-dir=/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/mods-available/" '--build=aarch64-linux-gnu' '--host=aarch64-linux-gnu' '--libdir=${prefix}/lib/php' '--libexecdir=${prefix}/lib/php' "--datadir=${prefix}/share/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}" "--program-suffix=${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}" '--disable-all' '--disable-debug' '--disable-rpath' '--disable-static' '--with-pic' '--with-layout=GNU' '--without-pear' '--enable-bcmath' '--enable-calendar' '--enable-dom' '--with-enchant' '--enable-exif' '--with-gettext' '--with-gmp' '--enable-ftp' '--with-iconv' '--enable-mbregex' '--enable-mbstring' '--enable-mysqlnd-compression-support' '--with-zlib' '--with-openssl=yes' '--with-libedit' '--with-libxml' '--with-bz2' '--enable-soap' '--enable-sockets' '--with-xsl' '--with-mhash=yes' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--with-zip' '--with-sodium' '--with-password-argon2' '--enable-gd' '--with-jpeg' '--with-xpm' '--with-webp' '--with-freetype' '--with-mysql-sock=/var/run/mysqld/mysqld.sock' '--disable-dtrace' '--enable-pdo' '--enable-mysqlnd' '--enable-pcntl' '--with-sqlite3=shared,/usr' '--with-pdo-sqlite=shared,/usr' '--with-pdo-dblib=shared,/usr' '--with-ldap=shared,/usr' '--with-ldap-sasl=/usr' '--enable-intl=shared' '--with-snmp=shared,/usr' '--with-pgsql=shared,/usr' '--with-pdo-pgsql=shared,/usr' '--enable-huge-code-pages' '--with-imap=shared,/usr' '--with-kerberos' '--with-imap-ssl=yes' '--with-mysqli=shared,mysqlnd' '--with-pdo-mysql=shared,mysqlnd' '--with-tidy=shared,/usr' '--with-pspell=shared,/usr' '--with-curl=shared,/usr' && \
     make -j3 && make install && cd /tmp && rm -rf ./php-$PHP_VERSION && rm ./php-$PHP_VERSION.tar.gz && cd /
 
 # Build OpenLiteSpeed from source.
@@ -83,3 +84,6 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /var/www/vhosts/
+
+# Default build context
+FROM release
