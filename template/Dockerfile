@@ -18,10 +18,10 @@ ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 ENV PHP_VERSION=$PHP_VERSION
+ENV BUILD_PACKAGES='build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev'
 
 # Install require build packages.
-RUN BUILD_PACKAGES="build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev" && \
-    apt-get update && \
+RUN pt-get update && \
     apt-get install -y $BUILD_PACKAGES \
     wget curl cron tzdata mariadb-client \
     pkg-config openssl libgssapi-krb5-2 libkrb5-3 libexpat1 libc-client2007e libdbd-freetds freetds-bin \
