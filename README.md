@@ -2,7 +2,7 @@
 [![Build Status](https://github.com/ndigitals/ols-dockerfiles/workflows/docker-build/badge.svg)](https://github.com/ndigitals/ols-dockerfiles/actions/new)
 [![docker pulls](https://img.shields.io/docker/pulls/ndigitals/openlitespeed?style=flat&color=blue)](https://hub.docker.com/r/ndigitals/openlitespeed)
 
-Install a lightweight OpenLiteSpeed container using the Stable version in Ubuntu 22.04 Linux on arm64.
+Install a lightweight OpenLiteSpeed container using the Stable version in Debian 11 Linux on arm64.
 
 ### Prerequisites
 *  [Install Docker](https://www.docker.com/)
@@ -12,7 +12,7 @@ The system will regulary build the OpenLiteSpeed Latest stable version, along wi
 
 |Component|Version|
 | :-------------: | :-------------: |
-|Linux|Ubuntu 22.04|
+|Linux|Debian 11|
 |OpenLiteSpeed|[Latest stable version](https://openlitespeed.org/release-log/version-1-7-x)|
 |PHP|[Latest stable version](https://www.php.net/downloads)|
 
@@ -24,7 +24,7 @@ docker pull ndigitals/openlitespeed:latest
 ```
 or specify the OpenLiteSpeed version with lsphp version
 ```
-docker pull ndigitals/openlitespeed:1.7.11-lsphp74
+docker pull ndigitals/openlitespeed:1.7.16-lsphp80
 ```
 ### Start a Container
 ```
