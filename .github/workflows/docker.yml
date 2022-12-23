@@ -76,3 +76,14 @@ jobs:
           tags: ndigitals/openlitespeed:${{ matrix.TAG }}
           cache-from: type=registry,ref=ndigitals/openlitespeed:latest
           cache-to: type=inline
+
+      # https://github.com/marketplace/actions/docker-hub-description
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        if: steps.php-version.outputs._0 == '8' && steps.php-version.outputs._1 == '2' && matrix.TAG == 'latest'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}
+
