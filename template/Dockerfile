@@ -19,19 +19,23 @@ ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 ENV PHP_VERSION=${PHP_VERSION}
 
-ARG BUILD_PACKAGES="build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev"
-ENV BUILD_PACKAGES=${BUILD_PACKAGES}
+ENV BUILD_PACKAGES="build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev"
 
 # Install require build packages.
 RUN apt-get update && \
     apt-get install -y $BUILD_PACKAGES wget curl cron tzdata mariadb-client \
-    pkg-config openssl libgssapi-krb5-2 libkrb5-3 libexpat1 libc-client2007e libdbd-freetds freetds-bin \
+    pkg-config openssl libgssapi-krb5-2 libkrb5-3 libexpat1 libc-client2007e libdbd-freetds freetds-bin
 
 # Fix FreeTDS missing libraries.
 RUN ln -s /usr/lib/aarch64-linux-gnu/libsybdb.a /usr/lib/libsybdb.a && \
     ln -s /usr/lib/aarch64-linux-gnu/libsybdb.so /usr/lib/libsybdb.so
 
 FROM build-setup AS release
+
+ARG OLS_VERSION
+ARG PHP_VERSION
+ARG PHP_MAJOR_VERSION
+ARG PHP_MINOR_VERSION
 
 # Build LSPHP from source.
 RUN cd /tmp && wget https://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
@@ -73,7 +77,7 @@ RUN ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp
 # Cleanup the system to keep things lean.
 # https://www.dajobe.org/blog/2015/04/18/making-debian-docker-images-smaller/
 RUN AUTO_ADDED_PACKAGES=`apt-mark showauto`
-RUN apt-get remove --purge -y --force-yes ${BUILD_PACKAGES} $AUTO_ADDED_PACKAGES
+RUN apt-get remove --purge -y --force-yes $BUILD_PACKAGES $AUTO_ADDED_PACKAGES
 
 RUN apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y & rm -rf /tmp/third-party
 
