@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix: 
         PHP_VERSION: ['8.0.26', '8.1.13', '8.2.0']
-        TAG: [latest,'']
 
     steps:
       - name: Checkout
@@ -47,7 +46,7 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v3
-        if: matrix.TAG != 'latest'
+        if: matrix.PHP_VERSION != '8.2.0'
         with:
           context: template
           platforms: linux/arm64
@@ -64,7 +63,7 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest
         uses: docker/build-push-action@v3
-        if: steps.php-version.outputs._0 == '8' && steps.php-version.outputs._1 == '2' && matrix.TAG == 'latest'
+        if: matrix.PHP_VERSION == '8.2.0'
         with:
           context: template
           platforms: linux/arm64
@@ -74,7 +73,7 @@ jobs:
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
           push: true
-          tags: ndigitals/openlitespeed:${{ matrix.TAG }}
+          tags: ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }},ndigitals/openlitespeed:latest
           cache-from: type=registry,ref=ndigitals/openlitespeed:latest
           cache-to: type=inline
 
