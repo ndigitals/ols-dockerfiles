@@ -4,12 +4,13 @@
 
 cd /build || exit 
 
-wget -O /usr/local/lsws/admin/misc/lsup.sh \
+wget -O $LSWS_HOME/admin/misc/lsup.sh \
     https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh
 
-chmod +x /usr/local/lsws/admin/misc/lsup.sh
+chmod +x $LSWS_HOME/admin/misc/lsup.sh
 
-ln -s /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php /usr/bin/php
+ln -s $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/bin/php
+ln -s $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/local/bin/lsphp
 
 echo "listener HTTP {
   address                 *:80
@@ -33,7 +34,7 @@ vhTemplate docker {
   }
 }
 
-" >> /usr/local/lsws/conf/httpd_config.conf
+" >> $LSWS_HOME/conf/httpd_config.conf
 
 mkdir -p /var/www/vhosts/localhost/{html,logs,certs}
 chown 1000:1000 /var/www/vhosts/localhost/ -R
