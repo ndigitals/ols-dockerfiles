@@ -4,10 +4,10 @@
 
 cd $LSWS_HOME/phpbuild || exit
 
-# Copy expat libraries for PHP 5 OLS admin build.
+# Copy expat libraries for PHP OLS admin build.
 cp /etc/lib/aarch64-linux-gnu/libexpat* /lib/
 
 # Build admin_php from source.
-wget https://www.php.net/distributions/php-$PHP_VERSION.tar.gz && \
-	tar xzf php-$PHP_VERSION.tar.gz && cd php-$PHP_VERSION && \
-	./configure '--prefix=/tmp' '--disable-all' '--enable-litespeed' '--enable-session' '--enable-posix' '--with-libxml' '--with-expat' '--with-zlib' '--enable-sockets' '--enable-bcmath'
+wget https://www.php.net/distributions/php-$OLS_ADMIN_PHP_VERSION.tar.gz && \
+	tar xzf php-$OLS_ADMIN_PHP_VERSION.tar.gz && cd php-$OLS_ADMIN_PHP_VERSION && \
+	./configure '--prefix=/tmp' '--disable-all' '--enable-litespeed' '--enable-session' '--enable-posix' '--with-libxml' '--with-expat' '--with-zlib' '--enable-sockets' '--enable-bcmath' '--enable-json'

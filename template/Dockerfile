@@ -22,6 +22,9 @@ ENV OLS_VERSION=${OLS_VERSION}
 ENV PHP_VERSION=${PHP_VERSION}
 ENV PHP_MAJOR_VERSION=${PHP_MAJOR_VERSION}
 ENV PHP_MINOR_VERSION=${PHP_MINOR_VERSION}
+ENV OLS_ADMIN_PHP_VERSION=7.4.33
+ENV OLS_ADMIN_PHP_MAJOR_VERSION=7
+ENV OLS_ADMIN_PHP_MINOR_VERSION=4
 
 COPY *.sh /build/
 
@@ -36,7 +39,7 @@ RUN /build/prepare-build.sh && \
     cd /build/openlitespeed-$OLS_VERSION && ./build.sh && ./install.sh && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT && \
     /build/prepare-ols-admin_php.sh && \
-    cd /usr/local/lsws/phpbuild/php-$PHP_VERSION && make -j3 && \
+    cd /usr/local/lsws/phpbuild/php-$OLS_ADMIN_PHP_VERSION && make -j3 && \
     /build/config-ols-admin_php.sh && \
     /build/config-ols.sh && \
     /build/prepare-acme.sh && \
