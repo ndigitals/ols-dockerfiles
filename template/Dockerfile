@@ -35,6 +35,9 @@ RUN /build/prepare-build.sh && \
     /build/prepare-ols.sh && \
     cd /build/openlitespeed-$OLS_VERSION && ./build.sh && ./install.sh && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT && \
+    /build/prepare-ols-admin_php.sh && \
+    cd /usr/local/lsws/phpbuild/php-$PHP_VERSION && make -j3 && \
+    /build/config-ols-admin_php.sh && \
     /build/config-ols.sh && \
     /build/prepare-acme.sh && \
     cd / && /build/cleanup-build-env.sh && rm -rf /build
@@ -51,6 +54,7 @@ COPY htpasswd /usr/local/lsws/admin/conf/htpasswd
 RUN chown 999:999 /usr/local/lsws/conf -R
 RUN cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/
 RUN cp -RP /usr/local/lsws/admin/conf /usr/local/lsws/admin/.conf/
+RUN ln -sf /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp
 RUN ln -sf /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp /usr/local/lsws/fcgi-bin/lsphp8
 RUN ln -sf /usr/local/lsws/fcgi-bin/lsphp8 /usr/local/lsws/fcgi-bin/lsphp
 
