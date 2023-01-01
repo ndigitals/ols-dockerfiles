@@ -20,11 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Add support for more platforms with QEMU (optional)
-      # https://github.com/marketplace/actions/docker-setup-qemu
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
       # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -36,12 +31,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # https://github.com/marketplace/actions/split-action
-      - uses: jungwinter/split@v2
+      # https://github.com/marketplace/actions/github-script
+      - uses: actions/github-script@v6
         id: php-version
         with:
-          msg: ${{ matrix.PHP_VERSION }}
-          separator: '.'
+          script: |
+            const _0 = matrix.PHP_VERSION.value.split('.')[0]
+            const _1 = matrix.PHP_VERSION.value.split('.')[1]
+            core.setOutput('_0', _0)
+            core.setOutput('_1', _1)
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
