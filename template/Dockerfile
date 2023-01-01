@@ -3,7 +3,14 @@ ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 
-FROM arm64v8/wordpress:cli-php$PHP_MAJOR_VERSION.$PHP_MINOR_VERSION AS wp-cli
+FROM arm64v8/wordpress:cli-php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} AS wp-cli
+
+ARG OLS_VERSION
+ARG PHP_VERSION
+ARG PHP_MAJOR_VERSION
+ARG PHP_MINOR_VERSION
+
+FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
 FROM arm64v8/debian:11-slim
 
@@ -45,6 +52,9 @@ RUN /build/prepare-build.sh && \
     /build/prepare-acme.sh && \
     cd / && /build/cleanup-build-env.sh && rm -rf /build
 
+RUN mkdir -p /usr/local/lsws/lsphp${PHP_MINOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
+
+COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MINOR_VERSION}0/etc/php/${PHP_MAJOR_VERSION}.0/", "/usr/local/lsws/lsphp${PHP_MINOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
 COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/local/bin/wp"]
 
 EXPOSE 7080
