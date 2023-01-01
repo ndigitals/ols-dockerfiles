@@ -34,10 +34,10 @@ jobs:
       # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
       - id: php-version
         run: |
-          _0=$(echo ${{matrix.PHP_VERSION.value}} | cut -d. -f1)
-          _1=$(echo ${{matrix.PHP_VERSION.value}} | cut -d. -f2)
-          echo "::set-output name=_0::$_0"
-          echo "::set-output name=_1::$_1"
+          _0=$(echo ${{matrix.PHP_VERSION}} | cut -d. -f1)
+          _1=$(echo ${{matrix.PHP_VERSION}} | cut -d. -f2)
+          echo "_0=$_0" >> $GITHUB_OUTPUT
+          echo "_1=$_1" >> $GITHUB_OUTPUT
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
