@@ -12,7 +12,7 @@ MINIMAL_APT_GET_ARGS='-y --no-install-recommends'
 PACKAGES_INSTALLED_LOG="/tmp/packages.lst"
 
 ## Run time dependencies ##
-RUN_PACKAGES="ca-certificates cron tzdata openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libc-client2007e libdbd-freetds freetds-bin procps libatomic1 net-tools"
+RUN_PACKAGES="ca-certificates cron tzdata openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libc-client2007e libdbd-freetds freetds-bin procps libatomic1 net-tools less"
 
 ## Build time dependencies ##
 
