@@ -12,6 +12,18 @@ chmod +x $LSWS_HOME/admin/misc/lsup.sh
 ln -s $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/bin/php
 ln -s $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/local/bin/lsphp
 
+# Get PEAR/PECL to install modules.
+cd $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin
+wget http://pear.php.net/go-pear.phar
+./lsphp go-pear.phar
+
+cd /build || exit 
+
+# Install missing PECL PHP modules.
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install redis
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install imagick
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install memcached
+
 echo "listener HTTP {
   address                 *:80
   secure                  0
