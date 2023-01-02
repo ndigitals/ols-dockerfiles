@@ -5,7 +5,7 @@
 cd $LSWS_HOME/phpbuild || exit
 
 # Copy expat libraries for PHP OLS admin build.
-cp /etc/lib/aarch64-linux-gnu/libexpat* /lib/
+cp /usr/lib/aarch64-linux-gnu/libexpat* /lib/
 
 # Build admin_php from source.
 wget https://www.php.net/distributions/php-$OLS_ADMIN_PHP_VERSION.tar.gz && \

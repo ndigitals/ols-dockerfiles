@@ -12,7 +12,7 @@ MINIMAL_APT_GET_ARGS='-y --no-install-recommends'
 PACKAGES_INSTALLED_LOG="/tmp/packages.lst"
 
 ## Run time dependencies ##
-RUN_PACKAGES="ca-certificates cron tzdata openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libcurl4 libc-client2007e libdbd-freetds freetds-bin procps libatomic1 net-tools less"
+RUN_PACKAGES="ca-certificates cron tzdata openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libcurl4 imagemagick libc-client2007e libmemcached11 libdbd-freetds freetds-bin procps libatomic1 net-tools less"
 
 ## Build time dependencies ##
 
@@ -24,7 +24,7 @@ BUILD_PACKAGES="git curl wget"
 BUILD_PACKAGES="$BUILD_PACKAGES pkg-config"
 
 # PHP building required packages
-BUILD_PACKAGES="$BUILD_PACKAGES build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev libxml2-dev"
+BUILD_PACKAGES="$BUILD_PACKAGES build-essential libssl-dev libdb5.3-dev krb5-multidev libkrb5-dev bison autoconf automake libtool re2c flex libxml2-dev libbz2-dev libcurl4-openssl-dev libexpat1-dev libjpeg-dev libfreetype6-dev libgmp3-dev libpng-dev libxpm-dev libc-client2007e-dev libenchant-2-dev libsasl2-dev libc-client2007e-dev libldap2-dev libldb-dev libmcrypt-dev libmhash-dev freetds-dev zlib1g-dev libpq-dev libmariadb-dev-compat libmariadb-dev libncurses5-dev libpcre3-dev unixodbc-dev libsqlite3-dev libaspell-dev libreadline6-dev librecode-dev libsnmp-dev libtidy-dev libxslt-dev libonig-dev libzip-dev libwebp-dev freetds-dev libpspell-dev libedit-dev libsodium-dev libargon2-dev libvarnishapi-dev libxml2-dev libmagickwand-dev libmagickcore-dev libmemcached-dev"
 
 # apt-get remove --allow-remove-essential enters an infinite loop of
 # pam errors with this package

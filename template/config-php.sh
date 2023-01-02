@@ -1,0 +1,19 @@
+#!/bin/bash -x
+
+. /build/config-build-env.sh
+
+cd /build || exit
+
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/bin/php
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/php
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} /usr/local/bin/lsphp
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp $LSWS_HOME/fcgi-bin/lsphp8
+ln -sf $LSWS_HOME/fcgi-bin/lsphp8 $LSWS_HOME/fcgi-bin/lsphp
+
+# Install missing PECL PHP modules.
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install igbinary
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install msgpack
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install imagick
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install redis
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install memcached
