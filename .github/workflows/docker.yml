@@ -32,10 +32,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
-      - id: php-version
+      - name: Determine PHP Major/Minor Version
+        id: php-version
         run: |
-          _0=$(echo ${{matrix.PHP_VERSION}} | cut -d. -f1)
-          _1=$(echo ${{matrix.PHP_VERSION}} | cut -d. -f2)
+          _0=$(echo ${{ matrix.PHP_VERSION }} | cut -d. -f1)
+          _1=$(echo ${{ matrix.PHP_VERSION }} | cut -d. -f2)
           echo "_0=$_0" >> $GITHUB_OUTPUT
           echo "_1=$_1" >> $GITHUB_OUTPUT
 
@@ -97,14 +98,14 @@ jobs:
           skip-version-file: true
 
       - name: Create Release Name
-        if: ${{ steps.changelog.outputs.skipped == 'false' }} && ${{ matrix.PHP_VERSION == '8.2.0' }}
+        if: steps.changelog.outputs.skipped == 'false' && matrix.PHP_VERSION == '8.2.0'
         run: |
           echo "RELEASE_NAME=${{ steps.changelog.outputs.version }} Release" >> $GITHUB_OUTPUT
 
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
         uses: ncipollo/release-action@v1
-        if: ${{ steps.changelog.outputs.skipped == 'false' }} && ${{ matrix.PHP_VERSION == '8.2.0' }}
+        if: steps.changelog.outputs.skipped == 'false' && matrix.PHP_VERSION == '8.2.0'
         with:
           tag: ${{ steps.changelog.outputs.tag }}
           name: ${{ env.RELEASE_NAME }}
