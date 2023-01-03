@@ -14,6 +14,8 @@ ln -sf $LSWS_HOME/fcgi-bin/lsphp8 $LSWS_HOME/fcgi-bin/lsphp
 # Install missing PECL PHP modules.
 $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install igbinary
 $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install msgpack
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install lzf
+$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install zstd
 $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install imagick
-$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install redis
-$LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install memcached
+yes "yes" | $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install redis
+yes "yes" | $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/pecl install memcached
