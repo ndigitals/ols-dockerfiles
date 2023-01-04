@@ -90,21 +90,24 @@ jobs:
       - name: Get Latest Tag
         id: previousTag
         uses: WyriHaximus/github-action-get-previous-tag@v1
+        if: matrix.PHP_VERSION == '8.2.0'
 
       # https://github.com/marketplace/actions/changelog-from-conventional-commits
       - name: Update CHANGELOG
         id: changelog
         uses: requarks/changelog-action@v1
+        if: matrix.PHP_VERSION == '8.2.0'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fromTag: ${{ github.ref_name }}
-          toTag: ${{ steps.previoustag.outputs.tag }}
+          fromTag: ${{ steps.previoustag.outputs.tag }}
+          toTag: ${{ github.ref_name }}
           writeToFile: false
 
       # https://github.com/marketplace/actions/conventional-commits-semver-release
-      - name: semver
+      - name: Get Release Version
         id: semver
         uses: grumpy-programmer/conventional-commits-semver-release@v1
+        if: matrix.PHP_VERSION == '8.2.0'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
