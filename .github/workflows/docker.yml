@@ -84,30 +84,43 @@ jobs:
           repository: ndigitals/openlitespeed
           short-description: ${{ github.event.repository.description }}
 
-      # https://github.com/marketplace/actions/conventional-changelog-action
-      - name: Conventional Changelog Action
+      - name: Get previous tag
+        id: previousTag
+        run: |
+          name=$(git --no-pager tag --sort=creatordate --merged ${{ github.ref_name }} | tail -2 | head -1)
+          echo "previousTag: $name"
+          echo "previousTag=$name" >> $GITHUB_ENV
+
+      # https://github.com/marketplace/actions/changelog-from-conventional-commits
+      - name: Update CHANGELOG
         id: changelog
-        uses: TriPSs/conventional-changelog-action@v3
-        if: matrix.PHP_VERSION == '8.2.0'
+        uses: requarks/changelog-action@v1
         with:
-          github-token: ${{ secrets.github_token }}
-          output-file: false
-          skip-commit: true
-          skip-git-pull: true
-          skip-on-empty : false
-          skip-version-file: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fromTag: ${{ github.ref_name }}
+          toTag: ${{ env.previousTag }}
+          writeToFile: false
+
+      # https://github.com/marketplace/actions/conventional-commits-semver-release
+      - name: semver
+        id: semver
+        uses: grumpy-programmer/conventional-commits-semver-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release Name
-        if: steps.changelog.outputs.skipped == 'false' && matrix.PHP_VERSION == '8.2.0'
+        if: steps.semver.outputs.released == 'true' && matrix.PHP_VERSION == '8.2.0'
         run: |
-          echo "RELEASE_NAME=${{ steps.changelog.outputs.version }} Release" >> $GITHUB_OUTPUT
+          RELEASE_NAME=$(echo ${{ steps.semver.outputs.version }} Release)
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
 
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
-        uses: ncipollo/release-action@v1
-        if: steps.changelog.outputs.skipped == 'false' && matrix.PHP_VERSION == '8.2.0'
+        uses: ncipollo/release-action@v1.12.0
+        if: steps.semver.outputs.released == 'true' && matrix.PHP_VERSION == '8.2.0'
         with:
-          tag: ${{ steps.changelog.outputs.tag }}
           name: ${{ env.RELEASE_NAME }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag: ${{ steps.semver.outputs.tag }}
+          commit: ${{ github.sha }}
+          body: ${{ steps.changelog.outputs.changes }}
 
