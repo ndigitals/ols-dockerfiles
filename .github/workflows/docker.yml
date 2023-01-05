@@ -86,44 +86,38 @@ jobs:
           repository: ndigitals/openlitespeed
           short-description: ${{ github.event.repository.description }}
 
-      # https://github.com/marketplace/actions/get-latest-tag
-      - name: Get Latest Tag
-        id: previousTag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        if: matrix.PHP_VERSION == '8.2.0'
-
-      # https://github.com/marketplace/actions/changelog-from-conventional-commits
-      - name: Update CHANGELOG
-        id: changelog
-        uses: requarks/changelog-action@v1
+      # https://github.com/marketplace/actions/semver-conventional-commits
+      - name: Get Versions
+        id: semver
+        uses: ietf-tools/semver-action@v1
         if: matrix.PHP_VERSION == '8.2.0'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fromTag: ${{ steps.previoustag.outputs.tag }}
-          toTag: ${{ github.ref_name }}
-          writeToFile: false
-
-      # https://github.com/marketplace/actions/conventional-commits-semver-release
-      - name: Get Release Version
-        id: semver
-        uses: grumpy-programmer/conventional-commits-semver-release@v1
-        if: matrix.PHP_VERSION == '8.2.0'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
+          branch: main
 
       - name: Create Release Name
-        if: steps.semver.outputs.released == 'true' && matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == '8.2.0'
         run: |
-          RELEASE_NAME=$(echo ${{ steps.semver.outputs.version }} Release)
+          RELEASE_NAME=$(echo ${{ steps.semver.outputs.nextStrict }} Release)
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
+
+      # https://github.com/marketplace/actions/universal-changelog-generator
+      - name: Generate a Changelog
+        id: changelog
+        uses: actions/changelog-generator
+        if: matrix.PHP_VERSION == '8.2.0'
+        with:
+          previousReleaseTagNameOrSha: ${{ steps.semver.outputs.current }}
+          nextReleaseTagName: ${{ steps.semver.outputs.next }}
+          nextReleaseName: ${{ env.RELEASE_NAME }}
 
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
         uses: ncipollo/release-action@v1.12.0
-        if: steps.semver.outputs.released == 'true' && matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == '8.2.0'
         with:
           name: ${{ env.RELEASE_NAME }}
-          tag: ${{ steps.semver.outputs.tag }}
+          tag: ${{ steps.semver.outputs.next }}
           commit: ${{ github.sha }}
-          body: ${{ steps.changelog.outputs.changes }}
+          body: ${{ steps.changelog.outputs.changelog }}
 
