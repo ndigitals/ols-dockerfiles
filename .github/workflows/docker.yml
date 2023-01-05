@@ -104,7 +104,7 @@ jobs:
       # https://github.com/marketplace/actions/universal-changelog-generator
       - name: Generate a Changelog
         id: changelog
-        uses: actions/changelog-generator
+        uses: mrchief/universal-changelog-action@v1.3.1
         if: matrix.PHP_VERSION == '8.2.0'
         with:
           previousReleaseTagNameOrSha: ${{ steps.semver.outputs.current }}
