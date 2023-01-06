@@ -33,5 +33,9 @@ vhTemplate docker {
 
 " >> $LSWS_HOME/conf/httpd_config.conf
 
+# Make sure that the fcgi lsphp is properly symlinked after the OLD build.
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} $LSWS_HOME/fcgi-bin/lsphp8
+ln -sf $LSWS_HOME/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/bin/lsphp${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} $LSWS_HOME/fcgi-bin/lsphp
+
 mkdir -p /var/www/vhosts/localhost/{html,logs,certs}
 chown 1000:1000 /var/www/vhosts/localhost/ -R
