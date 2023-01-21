@@ -8,6 +8,7 @@ on:
 
 env:
   OLS_VERSION: 1.7.16
+  PHP_STABLE_VERSION: '8.2.1'
 
 jobs:
   buildx:
@@ -15,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.26', '8.1.13', '8.2.0']
+        PHP_VERSION: ['8.0.27', '8.1.14', '8.2.1']
 
     steps:
       - name: Checkout
@@ -46,7 +47,7 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v3
-        if: matrix.PHP_VERSION != '8.2.0'
+        if: matrix.PHP_VERSION != env.PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -63,7 +64,7 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest
         uses: docker/build-push-action@v3
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -80,7 +81,7 @@ jobs:
       # https://github.com/marketplace/actions/docker-hub-description
       - name: Update Docker Hub README & Description
         uses: peter-evans/dockerhub-description@v3
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -91,14 +92,14 @@ jobs:
       - name: Get Versions
         id: semver
         uses: ietf-tools/semver-action@v1
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           token: ${{ github.token }}
           branch: main
 
       - name: Create Release Name
         id: release-name
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         run: |
           RELEASE_NAME=$(echo ${{ steps.semver.outputs.nextStrict }} Release)
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
@@ -107,7 +108,7 @@ jobs:
       - name: Generate a Changelog
         id: changelog
         uses: mrchief/universal-changelog-action@v1.3.1
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           previousReleaseTagNameOrSha: ${{ steps.semver.outputs.current }}
           nextReleaseTagName: 'main'
@@ -116,7 +117,7 @@ jobs:
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
         uses: ncipollo/release-action@v1.12.0
-        if: matrix.PHP_VERSION == '8.2.0'
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           name: ${{ steps.release-name.outputs.RELEASE_NAME }}
           tag: ${{ steps.semver.outputs.next }}
