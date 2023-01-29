@@ -46,6 +46,8 @@ RUN /build/prepare-build.sh && \
     /build/prepare-ols.sh && \
     cd /build/openlitespeed-$OLS_VERSION && ./build.sh && ./install.sh && \
     echo 'cloud-docker' > /usr/local/lsws/PLAT && \
+    cd /build/openlitespeed-$OLS_VERSION/src/modules/modsecurity-ls && make -f Makefile.f && \
+    cp mod_security.so /usr/local/lsws/modules && \
     /build/prepare-ols-admin_php.sh && \
     cd /usr/local/lsws/phpbuild/php-$OLS_ADMIN_PHP_VERSION && make -j3 && \
     /build/config-ols-admin_php.sh && \
