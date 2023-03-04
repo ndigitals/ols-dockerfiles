@@ -7,7 +7,7 @@ version: 2
 updates:
   # Maintain dependencies for the Dockerfile
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/templates" # Location of package manifests
+    directory: "/template" # Location of package manifests
     schedule:
       interval: "weekly"
 
