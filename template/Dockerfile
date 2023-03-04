@@ -66,6 +66,7 @@ ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
 COPY docker.conf /usr/local/lsws/conf/templates/docker.conf
 COPY httpd_config.xml /usr/local/lsws/conf/httpd_config.xml
 COPY htpasswd /usr/local/lsws/admin/conf/htpasswd
+COPY ols_htaccess /etc/cron.d/ols_htaccess
 
 RUN chown 999:999 /usr/local/lsws/conf -R
 RUN cp -RP /usr/local/lsws/conf/ /usr/local/lsws/.conf/
