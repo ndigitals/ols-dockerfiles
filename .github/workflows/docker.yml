@@ -36,6 +36,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          logout: false
 
       # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
       - name: Determine PHP Major/Minor Version
