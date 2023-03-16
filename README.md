@@ -1,6 +1,5 @@
 # OpenLiteSpeed Docker Container
 [![Build Status](https://github.com/ndigitals/ols-dockerfiles/workflows/docker-build/badge.svg)](https://github.com/ndigitals/ols-dockerfiles/actions/new)
-[![docker pulls](https://img.shields.io/docker/pulls/ndigitals/openlitespeed?style=flat&color=blue)](https://hub.docker.com/r/ndigitals/openlitespeed)
 
 Install a lightweight OpenLiteSpeed container using the Stable version in Debian 11 Linux on arm64.
 
@@ -20,19 +19,19 @@ The system will regulary build the OpenLiteSpeed Latest stable version, along wi
 ### Download an image
 Download the openlitespeed image, we can use latest for latest version
 ```
-docker pull ndigitals/openlitespeed:latest
+docker pull ghcr.io/ndigitals/openlitespeed:latest
 ```
 or specify the OpenLiteSpeed version with lsphp version
 ```
-docker pull ndigitals/openlitespeed:1.7.16-lsphp80
+docker pull ghcr.io/ndigitals/openlitespeed:1.7.16-lsphp80
 ```
 ### Start a Container
 ```
-docker run --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ndigitals/openlitespeed:latest
+docker run --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ghcr.io/ndigitals/openlitespeed:latest
 ```
 You can also run with Detached mode, like so:
 ```
-docker run -d --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ndigitals/openlitespeed:latest
+docker run -d --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ghcr.io/ndigitals/openlitespeed:latest
 ```
 Tip, you can get rid of `-p 7080:7080` from the command if you don’t need the web admin access.  
 
