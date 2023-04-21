@@ -54,6 +54,7 @@ jobs:
         with:
           context: template
           platforms: linux/arm64
+          provenance: false
           build-args: |
             OLS_VERSION=${{ env.OLS_VERSION }}
             PHP_VERSION=${{ matrix.PHP_VERSION }}
@@ -71,6 +72,7 @@ jobs:
         with:
           context: template
           platforms: linux/arm64
+          provenance: false
           build-args: |
             OLS_VERSION=${{ env.OLS_VERSION }}
             PHP_VERSION=${{ matrix.PHP_VERSION }}
