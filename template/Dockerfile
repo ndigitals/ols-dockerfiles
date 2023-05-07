@@ -3,7 +3,7 @@ ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 
-FROM arm64v8/wordpress:cli-php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} AS wp-cli
+FROM wordpress:cli-php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} AS wp-cli
 
 ARG OLS_VERSION
 ARG PHP_VERSION
@@ -12,7 +12,7 @@ ARG PHP_MINOR_VERSION
 
 FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
-FROM arm64v8/debian:11-slim
+FROM debian:11-slim
 
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
@@ -39,7 +39,8 @@ COPY *.sh /build/
 # References:
 #     - https://www.dajobe.org/blog/2015/04/18/making-debian-docker-images-smaller/
 #     - https://github.com/dajobe/docker-nghttp2
-RUN /build/prepare-build.sh && \
+RUN /build/secure-base.sh && \
+    /build/prepare-build.sh && \
     /build/prepare-php.sh && \
     cd /build/php-$PHP_VERSION && make -j3 && make install && \
     /build/config-php.sh && \
