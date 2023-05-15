@@ -91,14 +91,14 @@ jobs:
       - name: Get Versions
         id: semver
         uses: ietf-tools/semver-action@v1
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
         with:
           token: ${{ github.token }}
           branch: main
 
       - name: Create Release Name
         id: release-name
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
         run: |
           RELEASE_NAME=$(echo ${{ steps.semver.outputs.nextStrict }} Release)
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
@@ -107,7 +107,7 @@ jobs:
       - name: Generate a Changelog
         id: changelog
         uses: mrchief/universal-changelog-action@v1.3.2
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
         with:
           previousReleaseTagNameOrSha: ${{ steps.semver.outputs.current }}
           nextReleaseTagName: 'main'
@@ -116,7 +116,7 @@ jobs:
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
         uses: ncipollo/release-action@v1.12.0
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
         with:
           name: ${{ steps.release-name.outputs.RELEASE_NAME }}
           tag: ${{ steps.semver.outputs.next }}
