@@ -12,7 +12,7 @@ ARG PHP_MINOR_VERSION
 
 FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
