@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: 1.7.17
-  PHP_STABLE_VERSION: '8.2.7'
+  PHP_STABLE_VERSION: '8.2.8'
   REGISTRY: ghcr.io
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.29', '8.1.20', '8.2.7']
+        PHP_VERSION: ['8.0.29', '8.1.21', '8.2.8']
 
     steps:
       - name: Checkout
