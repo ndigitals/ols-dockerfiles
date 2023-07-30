@@ -12,7 +12,7 @@ ARG PHP_MINOR_VERSION
 
 FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
-FROM debian:11-slim
+FROM debian:12-slim
 
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
@@ -45,16 +45,10 @@ RUN /build/secure-base.sh && \
     cd /build/php-$PHP_VERSION && make -j3 && make install && \
     /build/config-php.sh && \
     /build/prepare-ols.sh && \
-    cd /build/openlitespeed-$OLS_VERSION && ./build.sh && ./install.sh && \
-    echo 'cloud-docker' > /usr/local/lsws/PLAT && \
-    cd /build/openlitespeed-$OLS_VERSION/src/modules/modsecurity-ls && make -f Makefile.f && \
-    cp mod_security.so /usr/local/lsws/modules && \
-    /build/prepare-ols-admin_php.sh && \
-    cd /usr/local/lsws/phpbuild/php-$OLS_ADMIN_PHP_VERSION && make -j3 && \
-    /build/config-ols-admin_php.sh && \
+    cd / && /build/cleanup-build-env.sh && \
     /build/config-ols.sh && \
-    /build/prepare-acme.sh && \
-    cd / && /build/cleanup-build-env.sh && rm -rf /build
+    echo 'cloud-docker' > /usr/local/lsws/PLAT && \
+    /build/prepare-acme.sh && rm -rf /build
 
 RUN mkdir -p /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
 

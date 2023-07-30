@@ -13,7 +13,7 @@ rm -f "$tmp"
 apt-get remove --purge -y $PACKAGES_TO_REMOVE
 
 # Install the run-time dependencies
-apt-get install $MINIMAL_APT_GET_ARGS $RUN_PACKAGES
+apt-get install $MINIMAL_APT_GET_ARGS $RUN_PACKAGES openlitespeed ols-modsecurity
 
 rm -rf /tmp/* /var/tmp/* $LSWS_HOME/phpbuild
 
