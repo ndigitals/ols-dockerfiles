@@ -1,4 +1,4 @@
-name: docker-build
+name: test-build
 
 on:
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
       - develop
 
 env:
-  OLS_VERSION: 1.7.17
-  PHP_STABLE_VERSION: '8.2.8'
+  OLS_VERSION: 1.7.18
+  PHP_STABLE_VERSION: '8.2.9'
   REGISTRY: ghcr.io
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.29', '8.1.21', '8.2.8']
+        PHP_VERSION: ['8.0.30','8.1.22','8.2.9']
 
     steps:
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
           echo "_1=$_1" >> $GITHUB_OUTPUT
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Build Docker Images
+      - name: Build Docker Image
         uses: docker/build-push-action@v4
         with:
           context: template
@@ -59,9 +59,30 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+          load: true
           push: false
-          tags: ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           cache-to: type=inline
+
+      - name: Test Docker Image
+        run: |
+          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          ID=$(docker run -d ${IMAGE})
+          sleep 5s
+          docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php && service lsws restart'
+          HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" http://localhost')
+          HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" https://localhost')
+          docker kill ${ID} &>/dev/null
+          docker rm ${ID} &>/dev/null
+          if [[ "${HTTP}" != "200" || "${HTTPS}" != "200" ]]; then
+              echo -e '[\u2718] Test failed!'
+              echo "http://localhost returned ${HTTP}"
+              echo "https://localhost returned ${HTTPS}"
+              exit 1
+          else
+              docker rmi ${IMAGE} &>/dev/null
+              echo -e '[\u2714] Tests passed!'
+          fi
 
