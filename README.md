@@ -4,7 +4,15 @@
 
 Install a lightweight OpenLiteSpeed container using the Stable version in Debian 11 Linux on arm64.
 
-### Prerequisites
+## Supported tags and respective `Dockerfile` links
+
+- `1.7.18-lsphp82`, `1.7-lsphp82`, `lsphp82`
+- `1.7.18-lsphp81`, `1.7-lsphp81`, `lsphp81`
+- `1.7.18-lsphp80`, `1.7-lsphp80`, `lsphp80`
+- `1.7.17-lsphp82`, `1.7.17-lsphp81`, `1.7.17-lsphp80`
+- `1.7.16-lsphp82`, `1.7.16-lsphp81`, `1.7.16-lsphp80`
+
+## Prerequisites
 
 - [Install Docker](https://www.docker.com/)
 
