@@ -4,11 +4,6 @@
 
 cd /build || exit
 
-wget -O $LSWS_HOME/admin/misc/lsup.sh \
-    https://raw.githubusercontent.com/litespeedtech/openlitespeed/master/dist/admin/misc/lsup.sh
-
-chmod +x $LSWS_HOME/admin/misc/lsup.sh
-
 echo "listener HTTP {
   address                 *:80
   secure                  0

@@ -1,0 +1,88 @@
+name: test-build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+
+env:
+  OLS_VERSION: 1.7.18
+  PHP_STABLE_VERSION: '8.2.9'
+  REGISTRY: ghcr.io
+
+jobs:
+  buildx:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix: 
+        PHP_VERSION: ['8.0.30','8.1.22','8.2.9']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
+
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # https://github.com/marketplace/actions/docker-login
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          logout: false
+
+      # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
+      - name: Determine PHP Major/Minor Version
+        id: php-version
+        run: |
+          _0=$(echo ${{ matrix.PHP_VERSION }} | cut -d. -f1)
+          _1=$(echo ${{ matrix.PHP_VERSION }} | cut -d. -f2)
+          echo "_0=$_0" >> $GITHUB_OUTPUT
+          echo "_1=$_1" >> $GITHUB_OUTPUT
+
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: template
+          platforms: linux/arm64
+          provenance: false
+          build-args: |
+            OLS_VERSION=${{ env.OLS_VERSION }}
+            PHP_VERSION=${{ matrix.PHP_VERSION }}
+            PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+          load: true
+          push: false
+          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
+          cache-to: type=inline
+
+      - name: Test Docker Image
+        run: |
+          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          ID=$(docker run -d ${IMAGE})
+          sleep 5s
+          docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php && service lsws restart'
+          HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" http://localhost')
+          HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" https://localhost')
+          docker kill ${ID} &>/dev/null
+          docker rm ${ID} &>/dev/null
+          if [[ "${HTTP}" != "200" || "${HTTPS}" != "200" ]]; then
+              echo -e '[\u2718] Test failed!'
+              echo "http://localhost returned ${HTTP}"
+              echo "https://localhost returned ${HTTPS}"
+              exit 1
+          else
+              docker rmi ${IMAGE} &>/dev/null
+              echo -e '[\u2714] Tests passed!'
+          fi
+

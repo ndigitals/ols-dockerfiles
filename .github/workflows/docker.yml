@@ -1,4 +1,4 @@
-name: docker-build
+name: release-build
 
 on:
   workflow_dispatch:
@@ -7,8 +7,8 @@ on:
       - main
 
 env:
-  OLS_VERSION: 1.7.17
-  PHP_STABLE_VERSION: '8.2.8'
+  OLS_VERSION: 1.7.18
+  PHP_STABLE_VERSION: '8.2.9'
   REGISTRY: ghcr.io
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.29', '8.1.21', '8.2.8']
+        PHP_VERSION: ['8.0.30', '8.1.22', '8.2.9']
 
     steps:
       - name: Checkout
