@@ -39,6 +39,15 @@ jobs:
           logout: false
 
       # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
+      - name: Determine OLS Major/Minor Version
+        id: ols-version
+        run: |
+          _0=$(echo ${{ env.OLS_VERSION }} | cut -d. -f1)
+          _1=$(echo ${{ env.OLS_VERSION }} | cut -d. -f2)
+          echo "_0=$_0" >> $GITHUB_OUTPUT
+          echo "_1=$_1" >> $GITHUB_OUTPUT
+
+      # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
       - name: Determine PHP Major/Minor Version
         id: php-version
         run: |
@@ -61,7 +70,11 @@ jobs:
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
           push: true
-          tags: ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          tags: |
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           cache-to: type=inline
@@ -82,6 +95,9 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
