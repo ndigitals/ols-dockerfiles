@@ -58,7 +58,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: matrix.PHP_VERSION != env.PHP_STABLE_VERSION
         with:
           context: template
@@ -81,7 +81,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           context: template
