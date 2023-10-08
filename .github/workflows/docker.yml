@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: 1.7.18
-  PHP_STABLE_VERSION: '8.2.10'
+  PHP_STABLE_VERSION: '8.2.11'
   REGISTRY: ghcr.io
 
 jobs:
@@ -17,21 +17,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.30','8.1.23','8.2.10']
+        PHP_VERSION: ['8.0.30','8.1.24','8.2.11']
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
 
       # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       # https://github.com/marketplace/actions/docker-login
       - name: Login to GitHub Packages
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -58,7 +58,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: matrix.PHP_VERSION != env.PHP_STABLE_VERSION
         with:
           context: template
@@ -81,7 +81,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
         with:
           context: template
