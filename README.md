@@ -32,25 +32,25 @@ The system will regulary build the OpenLiteSpeed Latest stable version, along wi
 
 Download the openlitespeed image, we can use latest for latest version
 
-```
+```shell
 docker pull ghcr.io/ndigitals/openlitespeed:latest
 ```
 
 or specify the OpenLiteSpeed version with lsphp version
 
-```
+```shell
 docker pull ghcr.io/ndigitals/openlitespeed:1.7-lsphp82
 ```
 
 ### Start a Container
 
-```
+```shell
 docker run --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ghcr.io/ndigitals/openlitespeed:latest
 ```
 
 You can also run with Detached mode, like so:
 
-```
+```shell
 docker run -d --name openlitespeed -p 7080:7080 -p 80:80 -p 443:443 -it ghcr.io/ndigitals/openlitespeed:latest
 ```
 
@@ -60,13 +60,13 @@ Tip, you can get rid of `-p 7080:7080` from the command if you don’t need the 
 
 The server should start running successfully, and you should be able to log into the container. Add some files you want to display with the following command:
 
-```
+```shell
 docker exec -it openlitespeed bash
 ```
 
 Your default `WORKDIR` should be `/var/www/vhosts/`, since the default document root path is `/var/www/vhosts/localhost/html`. Simply add the following command to `index.php`, then we can verify it from the browser with a public server IP address on both HTTP and HTTPS.
 
-```
+```shell
 echo '<?php phpinfo();' > localhost/html/index.php
 ```
 
@@ -74,7 +74,7 @@ echo '<?php phpinfo();' > localhost/html/index.php
 
 Feel free to substitute the "openlitespeed" to the "Container_ID" if you did not define any name for the container.
 
-```
+```shell
 docker stop openlitespeed
 ```
 
