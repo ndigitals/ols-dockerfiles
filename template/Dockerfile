@@ -14,7 +14,7 @@ FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ol
 
 FROM debian:bookworm-20230814-slim
 
-LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles
+LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles/pkgs/container/openlitespeed
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
 LABEL org.opencontainers.image.source=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.vendor="Nolte Digital Solutions"
