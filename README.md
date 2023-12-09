@@ -6,6 +6,7 @@ Install a lightweight OpenLiteSpeed container using the Stable version in Debian
 
 ## Supported tags
 
+- `1.7.18-lsphp83`, `1.7-lsphp83`, `1-lsphp83`, `lsphp83`
 - `1.7.18-lsphp82`, `1.7-lsphp82`, `1-lsphp82`, `lsphp82`
 - `1.7.18-lsphp81`, `1.7-lsphp81`, `1-lsphp81`, `lsphp81`
 - `1.7.18-lsphp80`, `1.7-lsphp80`, `1-lsphp80`, `lsphp80`
