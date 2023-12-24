@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: 1.7.18
-  PHP_STABLE_VERSION: '8.3.0'
+  PHP_STABLE_VERSION: '8.3.1'
   REGISTRY: ghcr.io
 
 jobs:
@@ -17,7 +17,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        PHP_VERSION: ['8.0.30','8.1.26','8.2.13','8.3.0']
+        PHP_VERSION:
+          - '8.0.30'
+          - '8.1.27'
+          - '8.2.14'
+          - '8.3.1'
 
     steps:
       - name: Checkout
@@ -76,7 +80,7 @@ jobs:
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
@@ -100,21 +104,27 @@ jobs:
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    needs: buildx
+
+    steps:
       # https://github.com/marketplace/actions/semver-conventional-commits
       - name: Get Versions
         id: semver
         uses: ietf-tools/semver-action@v1
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
+        if: github.event_name == 'push'
         with:
           token: ${{ github.token }}
           branch: main
 
       - name: Create Release Name
         id: release-name
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
+        if: github.event_name == 'push'
         run: |
           RELEASE_NAME=$(echo ${{ steps.semver.outputs.nextStrict }} Release)
           echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_OUTPUT
@@ -123,7 +133,7 @@ jobs:
       - name: Generate a Changelog
         id: changelog
         uses: mrchief/universal-changelog-action@v1.3.2
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
+        if: github.event_name == 'push'
         with:
           previousReleaseTagNameOrSha: ${{ steps.semver.outputs.current }}
           nextReleaseTagName: 'main'
@@ -132,7 +142,7 @@ jobs:
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
         uses: ncipollo/release-action@v1.13.0
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION && github.event_name == 'push'
+        if: github.event_name == 'push'
         with:
           name: ${{ steps.release-name.outputs.RELEASE_NAME }}
           tag: ${{ steps.semver.outputs.next }}
