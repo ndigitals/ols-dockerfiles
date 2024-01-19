@@ -7,7 +7,7 @@ on:
       - develop
 
 env:
-  OLS_VERSION: 1.7.18
+  OLS_VERSION: 1.7.19
   PHP_STABLE_VERSION: '8.3.2'
   REGISTRY: ghcr.io
 
