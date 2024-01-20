@@ -6,10 +6,18 @@ Install a lightweight OpenLiteSpeed container using the Stable version in Debian
 
 ## Supported tags
 
-- `1.7.19-lsphp83`, `1.7-lsphp83`, `1-lsphp83`, `lsphp83`
-- `1.7.19-lsphp82`, `1.7-lsphp82`, `1-lsphp82`, `lsphp82`
-- `1.7.19-lsphp81`, `1.7-lsphp81`, `1-lsphp81`, `lsphp81`
-- `1.7.19-lsphp80`, `1.7-lsphp80`, `1-lsphp80`, `lsphp80`
+- `1.7.19-lsphp83-node20`, `1.7.19-lsphp83`, `1.7-lsphp83-node20`, `1.7-lsphp83`, `1-lsphp83-node20`, `1-lsphp83`, `lsphp83-node20`, `lsphp83`
+- `1.7.19-lsphp83-node18`, `1.7-lsphp83-node18`, `1-lsphp83-node18`, `lsphp83-node18`
+- `1.7.19-lsphp83-node16`, `1.7-lsphp83-node16`, `1-lsphp83-node16`, `lsphp83-node16`
+- `1.7.19-lsphp82-node20`, `1.7.19-lsphp82`, `1.7-lsphp82-node20`, `1.7-lsphp82`, `1-lsphp82-node20`, `1-lsphp82`, `lsphp82-node20`, `lsphp82`
+- `1.7.19-lsphp82-node18`, `1.7-lsphp82-node18`, `1-lsphp82-node18`, `lsphp82-node18`
+- `1.7.19-lsphp82-node16`, `1.7-lsphp82-node16`, `1-lsphp82-node16`, `lsphp82-node16`
+- `1.7.19-lsphp81-node20`, `1.7.19-lsphp81`, `1.7-lsphp81-node20`, `1.7-lsphp81`, `1-lsphp81-node20`, `1-lsphp81`, `lsphp81-node20`, `lsphp81`
+- `1.7.19-lsphp81-node18`, `1.7-lsphp81-node18`, `1-lsphp81-node18`, `lsphp81-node18`
+- `1.7.19-lsphp81-node16`, `1.7-lsphp81-node16`, `1-lsphp81-node16`, `lsphp81-node16`
+- `1.7.19-lsphp80-node20`, `1.7.19-lsphp80`, `1.7-lsphp80-node20`, `1.7-lsphp80`, `1-lsphp80-node20`, `1-lsphp80`, `lsphp80-node20`, `lsphp80`
+- `1.7.19-lsphp80-node18`, `1.7-lsphp80-node18`, `1-lsphp80-node18`, `lsphp80-node18`
+- `1.7.19-lsphp80-node16`, `1.7-lsphp80-node16`, `1-lsphp80-node16`, `lsphp80-node16`
 - `1.7.18-lsphp83`, `1.7.18-lsphp82`, `1.7.18-lsphp81`, `1.7.18-lsphp80`
 - `1.7.17-lsphp82`, `1.7.17-lsphp81`, `1.7.17-lsphp80`
 - `1.7.16-lsphp82`, `1.7.16-lsphp81`, `1.7.16-lsphp80`
@@ -79,6 +87,12 @@ Feel free to substitute the "openlitespeed" to the "Container_ID" if you did not
 ```shell
 docker stop openlitespeed
 ```
+
+## NodeJS Support
+
+This image includes NodeJS in order to run NodeJS apps. Choose a tag that includes the version of NodeJS needed.
+
+See official documentation for more details on running NodeJS under OpenLiteSpeed. https://openlitespeed.org/kb/running-node-js-apps-with-openlitespeed/
 
 ## Support & Feedback
 
