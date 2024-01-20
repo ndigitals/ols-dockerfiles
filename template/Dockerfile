@@ -57,7 +57,7 @@ RUN /build/secure-base.sh && \
 RUN mkdir -p /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
 
 COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}0/etc/php/${PHP_MAJOR_VERSION}.0/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
-COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/local/bin/wp"]
+COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/bin/wp"]
 
 EXPOSE 7080
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
