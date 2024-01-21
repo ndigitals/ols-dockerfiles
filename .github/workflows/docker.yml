@@ -137,7 +137,7 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
-            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }-node${{ matrix.NODE_VERSION }}}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
@@ -171,7 +171,7 @@ jobs:
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
-            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }-node${{ matrix.NODE_VERSION }}}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
