@@ -2,6 +2,7 @@ ARG OLS_VERSION
 ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
+ARG NODE_VERSION
 
 FROM wordpress:cli-php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} AS wp-cli
 
@@ -9,6 +10,7 @@ ARG OLS_VERSION
 ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
+ARG NODE_VERSION
 
 FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
@@ -24,6 +26,7 @@ ARG OLS_VERSION
 ARG PHP_VERSION
 ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
+ARG NODE_VERSION
 
 ENV OLS_VERSION=${OLS_VERSION}
 ENV PHP_VERSION=${PHP_VERSION}
@@ -32,6 +35,7 @@ ENV PHP_MINOR_VERSION=${PHP_MINOR_VERSION}
 ENV OLS_ADMIN_PHP_VERSION=7.4.33
 ENV OLS_ADMIN_PHP_MAJOR_VERSION=7
 ENV OLS_ADMIN_PHP_MINOR_VERSION=4
+ENV NODE_VERSION=${NODE_VERSION}
 
 COPY *.sh /build/
 
@@ -57,7 +61,7 @@ RUN /build/secure-base.sh && \
 RUN mkdir -p /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
 
 COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}0/etc/php/${PHP_MAJOR_VERSION}.0/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
-COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/local/bin/wp"]
+COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/bin/wp"]
 
 EXPOSE 7080
 ENV PATH="/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"

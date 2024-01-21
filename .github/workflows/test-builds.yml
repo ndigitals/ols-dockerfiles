@@ -9,6 +9,7 @@ on:
 env:
   OLS_VERSION: 1.7.19
   PHP_STABLE_VERSION: '8.3.2'
+  NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
 jobs:
@@ -22,6 +23,10 @@ jobs:
           - '8.1.27'
           - '8.2.15'
           - '8.3.2'
+        NODE_VERSION:
+          - '16'
+          - '18'
+          - '20'
 
     steps:
       - name: Checkout
@@ -63,16 +68,17 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            NODE_VERSION=${{ matrix.NODE_VERSION }}
           load: true
           push: false
-          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
       - name: Test Docker Image
         run: |
-          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
           ID=$(docker run -d ${IMAGE})
           sleep 5s
           docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php && service lsws restart'

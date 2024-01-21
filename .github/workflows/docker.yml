@@ -9,6 +9,7 @@ on:
 env:
   OLS_VERSION: 1.7.19
   PHP_STABLE_VERSION: '8.3.2'
+  NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
 jobs:
@@ -22,6 +23,10 @@ jobs:
           - '8.1.27'
           - '8.2.15'
           - '8.3.2'
+        NODE_VERSION:
+          - '16'
+          - '18'
+          - '20'
 
     steps:
       - name: Checkout
@@ -63,7 +68,9 @@ jobs:
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
-        if: matrix.PHP_VERSION != env.PHP_STABLE_VERSION
+        if: |
+            matrix.PHP_VERSION != env.PHP_STABLE_VERSION
+            && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -73,20 +80,79 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
+          cache-to: type=inline
+
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Build and Push Docker Image - latest PHP, non-latest Node
+        uses: docker/build-push-action@v5
+        if: |
+            matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+            && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
+        with:
+          context: template
+          platforms: linux/arm64
+          provenance: false
+          build-args: |
+            OLS_VERSION=${{ env.OLS_VERSION }}
+            PHP_VERSION=${{ matrix.PHP_VERSION }}
+            PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            NODE_VERSION=${{ matrix.NODE_VERSION }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
+          cache-to: type=inline
+
+      # https://github.com/marketplace/actions/build-and-push-docker-images
+      - name: Build and Push Docker Image - latest Node, non-latest PHP
+        uses: docker/build-push-action@v5
+        if: |
+            matrix.PHP_VERSION != env.PHP_STABLE_VERSION
+            && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
+        with:
+          context: template
+          platforms: linux/arm64
+          provenance: false
+          build-args: |
+            OLS_VERSION=${{ env.OLS_VERSION }}
+            PHP_VERSION=${{ matrix.PHP_VERSION }}
+            PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            NODE_VERSION=${{ matrix.NODE_VERSION }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Build and Push Docker Image - latest
+      - name: Build and Push Docker Image - latest PHP & Node
         uses: docker/build-push-action@v5
-        if: matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+        if: |
+            matrix.PHP_VERSION == env.PHP_STABLE_VERSION
+            && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -96,11 +162,16 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}.${{ steps.ols-version.outputs._1 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ steps.ols-version.outputs._0 }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
+            ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
