@@ -5,8 +5,8 @@
 apt-get update -y
 apt-get install $MINIMAL_APT_GET_ARGS $SETUP_PACKAGES
 
-# Prepare to install Node 16.
-curl -sL https://deb.nodesource.com/setup_16.x | bash -
+# Prepare to install Node.
+curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash -
 
 # Prepare to install Yarn.
 curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
