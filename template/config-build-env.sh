@@ -15,7 +15,7 @@ PACKAGES_INSTALLED_LOG="/tmp/packages.lst"
 SETUP_PACKAGES="ca-certificates cron tzdata pkg-config git curl wget"
 
 ## Run time dependencies ##
-RUN_PACKAGES="ca-certificates cron tzdata pkg-config git curl wget openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libzstd1 liblz4-1 libcurl4 imagemagick libc-client2007e libmemcached11 libdbd-freetds freetds-bin procps libatomic1 net-tools less libjpeg-turbo-progs optipng gifsicle zip unzip libyajl2 libpcre2-posix2 libpcre++0v5 liblmdb0 libgeoip1 ruby-full gnupg2 nodejs yarn mmdb-bin lua-mmdb brotli libbrotli1 liblua5.2-0 lua5.2 ssdeep libldap-2.4-2 libldap-common libssh2-1 libsasl2-2 libsasl2-modules libsasl2-modules-db libnghttp2-14 libpsl5 librtmp1 publicsuffix"
+RUN_PACKAGES="ca-certificates cron tzdata pkg-config git curl wget openssl mariadb-client libgssapi-krb5-2 libkrb5-3 libexpat1 libxml2 libargon2-1 libenchant-2-2 libpng16-16 libwebp6 libjpeg62-turbo libxpm4 libfreetype6 libonig5 libsodium23 libxslt1.1 libzip4 libzstd1 liblz4-1 libcurl4 imagemagick libc-client2007e libmemcached11 libdbd-freetds freetds-bin procps libatomic1 net-tools less libjpeg-turbo-progs optipng gifsicle zip unzip libyajl2 libpcre2-posix2 libpcre++0v5 liblmdb0 libgeoip1 ruby-full gnupg2 nodejs yarn mmdb-bin lua-mmdb brotli libbrotli1 liblua5.2-0 lua5.2 ssdeep libldap-2.4-2 libldap-common libssh2-1 libsasl2-2 libsasl2-modules libsasl2-modules-db libnghttp2-14 libpsl5 librtmp1 publicsuffix webp"
 
 ## Build time dependencies ##
 
