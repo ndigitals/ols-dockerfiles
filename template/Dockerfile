@@ -12,7 +12,7 @@ ARG PHP_MAJOR_VERSION
 ARG PHP_MINOR_VERSION
 ARG NODE_VERSION
 
-FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
+FROM litespeedtech/openlitespeed:1.7.19-lsphp${PHP_MAJOR_VERSION}0 AS ols
 
 FROM debian:11-slim
 
