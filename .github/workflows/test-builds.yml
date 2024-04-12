@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix: 
         PHP_VERSION:
-          - '8.1.27'
+          - '8.1.28'
           - '8.2.18'
           - '8.3.6'
         NODE_VERSION:
