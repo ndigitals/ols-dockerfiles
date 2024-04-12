@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: '1.7.19'
-  PHP_STABLE_VERSION: '8.3.4'
+  PHP_STABLE_VERSION: '8.3.6'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -20,8 +20,8 @@ jobs:
       matrix: 
         PHP_VERSION:
           - '8.1.27'
-          - '8.2.17'
-          - '8.3.4'
+          - '8.2.18'
+          - '8.3.6'
         NODE_VERSION:
           - '18'
           - '20'
