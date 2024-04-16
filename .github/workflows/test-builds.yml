@@ -9,6 +9,7 @@ on:
 env:
   OLS_VERSION: '1.7.19'
   PHP_STABLE_VERSION: '8.3.6'
+  OLS_ADMIN_PHP_STABLE_VERSION: '7.4.33'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -25,6 +26,13 @@ jobs:
         NODE_VERSION:
           - '18'
           - '20'
+        OLS_ADMIN_PHP_VERSION:
+          - '7.4.33'
+        include:
+          - job-name: 'OLS Admin PHP 8.x RC'
+            PHP_VERSION: '8.1.28'
+            NODE_VERSION: '20'
+            OLS_ADMIN_PHP_VERSION: '8.2.18'
 
     steps:
       - name: Checkout
@@ -54,6 +62,15 @@ jobs:
           echo "_0=$_0" >> $GITHUB_OUTPUT
           echo "_1=$_1" >> $GITHUB_OUTPUT
 
+      # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
+      - name: Determine OLS Admin PHP Major/Minor Version
+        id: ols-admin-php-version
+        run: |
+          _0=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f1)
+          _1=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f2)
+          echo "_0=$_0" >> $GITHUB_OUTPUT
+          echo "_1=$_1" >> $GITHUB_OUTPUT
+
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build Docker Image
         uses: docker/build-push-action@v5
@@ -66,21 +83,25 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           load: true
           push: false
-          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}-adminlsphp${{ steps.ols-admin-php-version.outputs._0 }}${{ steps.ols-admin-php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
       - name: Test Docker Image
         run: |
-          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
+          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}-adminlsphp${{ steps.ols-admin-php-version.outputs._0 }}${{ steps.ols-admin-php-version.outputs._1 }}
+          echo -e 'Testing PHP Info Site...'
           ID=$(docker run -d ${IMAGE})
           sleep 5s
           docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php && service lsws restart'
-          HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" http://localhost')
+          HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -IkL -w "%{http_code}" http://localhost')
           HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" https://localhost')
           docker kill ${ID} &>/dev/null
           docker rm ${ID} &>/dev/null
@@ -88,9 +109,27 @@ jobs:
               echo -e '[\u2718] Test failed!'
               echo "http://localhost returned ${HTTP}"
               echo "https://localhost returned ${HTTPS}"
+              docker rmi ${IMAGE} &>/dev/null
               exit 1
           else
-              docker rmi ${IMAGE} &>/dev/null
               echo -e '[\u2714] Tests passed!'
           fi
+          echo -e 'Testing OLS Admin Control Panel...'
+          ID=$(docker run -d ${IMAGE})
+          sleep 5s
+          HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -IkL -w "%{http_code}" "http://localhost:7080/login.php?timedout=1#view/confMgr.php?m=tp_docker&p=ext"')
+          HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" "https://localhost:7080/login.php?timedout=1#view/confMgr.php?m=tp_docker&p=ext"')
+          docker kill ${ID} &>/dev/null
+          docker rm ${ID} &>/dev/null
+          if [[ "${HTTP}" != "200" || "${HTTPS}" != "200" ]]; then
+              echo -e '[\u2718] Test failed!'
+              echo "http://localhost returned ${HTTP}"
+              echo "https://localhost returned ${HTTPS}"
+              docker rmi ${IMAGE} &>/dev/null
+              exit 1
+          else
+              echo -e '[\u2714] Tests passed!'
+          fi
+          echo -e 'Cleaning Up Test Image...'
+          docker rmi ${IMAGE} &>/dev/null
 
