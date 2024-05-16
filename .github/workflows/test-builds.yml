@@ -9,7 +9,6 @@ on:
 env:
   OLS_VERSION: '1.7.19'
   PHP_STABLE_VERSION: '8.3.6'
-  OLS_ADMIN_PHP_STABLE_VERSION: '7.4.33'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -26,8 +25,6 @@ jobs:
         NODE_VERSION:
           - '18'
           - '20'
-        OLS_ADMIN_PHP_VERSION:
-          - '7.4.33'
         include:
           - job-name: 'OLS Admin PHP 8.x RC'
             PHP_VERSION: '8.1.28'
@@ -62,15 +59,6 @@ jobs:
           echo "_0=$_0" >> $GITHUB_OUTPUT
           echo "_1=$_1" >> $GITHUB_OUTPUT
 
-      # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
-      - name: Determine OLS Admin PHP Major/Minor Version
-        id: ols-admin-php-version
-        run: |
-          _0=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f1)
-          _1=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f2)
-          echo "_0=$_0" >> $GITHUB_OUTPUT
-          echo "_1=$_1" >> $GITHUB_OUTPUT
-
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build Docker Image
         uses: docker/build-push-action@v5
@@ -83,20 +71,20 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           load: true
           push: false
-          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}-adminlsphp${{ steps.ols-admin-php-version.outputs._0 }}${{ steps.ols-admin-php-version.outputs._1 }}
+          tags: openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
 
       - name: Test Docker Image
         run: |
-          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}-adminlsphp${{ steps.ols-admin-php-version.outputs._0 }}${{ steps.ols-admin-php-version.outputs._1 }}
+          IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
           echo -e 'Testing PHP Info Site...'
           ID=$(docker run -d ${IMAGE})
           sleep 5s
