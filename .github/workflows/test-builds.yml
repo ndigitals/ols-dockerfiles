@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: '1.7.19'
-  PHP_STABLE_VERSION: '8.3.6'
+  PHP_STABLE_VERSION: '8.3.8'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -19,17 +19,12 @@ jobs:
       fail-fast: false
       matrix: 
         PHP_VERSION:
-          - '8.1.28'
-          - '8.2.18'
-          - '8.3.6'
+          - '8.1.29'
+          - '8.2.20'
+          - '8.3.8'
         NODE_VERSION:
           - '18'
           - '20'
-        include:
-          - job-name: 'OLS Admin PHP 8.x RC'
-            PHP_VERSION: '8.1.28'
-            NODE_VERSION: '20'
-            OLS_ADMIN_PHP_VERSION: '8.2.18'
 
     steps:
       - name: Checkout
