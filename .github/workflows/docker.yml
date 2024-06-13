@@ -8,8 +8,7 @@ on:
 
 env:
   OLS_VERSION: '1.7.19'
-  PHP_STABLE_VERSION: '8.3.6'
-  OLS_ADMIN_PHP_STABLE_VERSION: '7.4.33'
+  PHP_STABLE_VERSION: '8.3.8'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -21,20 +20,13 @@ jobs:
       matrix: 
         PHP_VERSION:
           - '8.0.30'
-          - '8.1.28'
-          - '8.2.18'
-          - '8.3.6'
+          - '8.1.29'
+          - '8.2.20'
+          - '8.3.8'
         NODE_VERSION:
           - '16'
           - '18'
           - '20'
-        OLS_ADMIN_PHP_VERSION:
-          - '7.4.33'
-        include:
-          - job-name: 'OLS Admin PHP 8.x RC'
-            PHP_VERSION: '8.1.28'
-            NODE_VERSION: '20'
-            OLS_ADMIN_PHP_VERSION: '8.2.18'
 
     steps:
       - name: Checkout
@@ -73,22 +65,12 @@ jobs:
           echo "_0=$_0" >> $GITHUB_OUTPUT
           echo "_1=$_1" >> $GITHUB_OUTPUT
 
-      # https://github.com/orgs/community/discussions/26625#discussioncomment-3252582
-      - name: Determine OLS Admin PHP Major/Minor Version
-        id: ols-admin-php-version
-        run: |
-          _0=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f1)
-          _1=$(echo ${{ matrix.OLS_ADMIN_PHP_VERSION }} | cut -d. -f2)
-          echo "_0=$_0" >> $GITHUB_OUTPUT
-          echo "_1=$_1" >> $GITHUB_OUTPUT
-
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         if: |
             matrix.PHP_VERSION != env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
-            && matrix.OLS_ADMIN_PHP_VERSION == env.OLS_ADMIN_PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -98,9 +80,9 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
@@ -118,7 +100,6 @@ jobs:
         if: |
             matrix.PHP_VERSION == env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
-            && matrix.OLS_ADMIN_PHP_VERSION == env.OLS_ADMIN_PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -128,9 +109,9 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
@@ -148,7 +129,6 @@ jobs:
         if: |
             matrix.PHP_VERSION != env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
-            && matrix.OLS_ADMIN_PHP_VERSION == env.OLS_ADMIN_PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -158,9 +138,9 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
@@ -182,7 +162,6 @@ jobs:
         if: |
             matrix.PHP_VERSION == env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
-            && matrix.OLS_ADMIN_PHP_VERSION == env.OLS_ADMIN_PHP_STABLE_VERSION
         with:
           context: template
           platforms: linux/arm64
@@ -192,9 +171,9 @@ jobs:
             PHP_VERSION=${{ matrix.PHP_VERSION }}
             PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
             PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
+            OLS_ADMIN_PHP_VERSION=${{ matrix.PHP_VERSION }}
+            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
+            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
             NODE_VERSION=${{ matrix.NODE_VERSION }}
           push: true
           tags: |
@@ -207,31 +186,6 @@ jobs:
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}
             ${{ env.REGISTRY }}/ndigitals/openlitespeed:latest
-          no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
-          cache-to: type=inline
-
-      # https://github.com/marketplace/actions/build-and-push-docker-images
-      - name: Build and Push Docker Image Admin PHP 8.x RC
-        uses: docker/build-push-action@v5
-        if: |
-            matrix.OLS_ADMIN_PHP_VERSION != env.OLS_ADMIN_PHP_STABLE_VERSION
-        with:
-          context: template
-          platforms: linux/arm64
-          provenance: false
-          build-args: |
-            OLS_VERSION=${{ env.OLS_VERSION }}
-            PHP_VERSION=${{ matrix.PHP_VERSION }}
-            PHP_MAJOR_VERSION=${{ steps.php-version.outputs._0 }}
-            PHP_MINOR_VERSION=${{ steps.php-version.outputs._1 }}
-            OLS_ADMIN_PHP_VERSION=${{ matrix.OLS_ADMIN_PHP_VERSION }}
-            OLS_ADMIN_PHP_MAJOR_VERSION=${{ steps.ols-admin-php-version.outputs._0 }}
-            OLS_ADMIN_PHP_MINOR_VERSION=${{ steps.ols-admin-php-version.outputs._1 }}
-            NODE_VERSION=${{ matrix.NODE_VERSION }}
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/ndigitals/openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}-adminlsphp${{ steps.ols-admin-php-version.outputs._0 }}${{ steps.ols-admin-php-version.outputs._1 }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' && true || false }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/ndigitals/openlitespeed
           cache-to: type=inline
