@@ -67,7 +67,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         if: |
             matrix.PHP_VERSION != env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
@@ -96,7 +96,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest PHP, non-latest Node
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         if: |
             matrix.PHP_VERSION == env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION != env.NODE_STABLE_VERSION
@@ -125,7 +125,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest Node, non-latest PHP
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         if: |
             matrix.PHP_VERSION != env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
@@ -158,7 +158,7 @@ jobs:
 
       # https://github.com/marketplace/actions/build-and-push-docker-images
       - name: Build and Push Docker Image - latest PHP & Node
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         if: |
             matrix.PHP_VERSION == env.PHP_STABLE_VERSION
             && matrix.NODE_VERSION == env.NODE_STABLE_VERSION
