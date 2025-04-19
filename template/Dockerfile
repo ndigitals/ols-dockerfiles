@@ -18,7 +18,7 @@ ARG OLS_ADMIN_PHP_MAJOR_VERSION
 ARG OLS_ADMIN_PHP_MINOR_VERSION
 ARG NODE_VERSION
 
-FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}0 AS ols
+FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}1 AS ols
 
 FROM debian:11-slim
 
@@ -69,7 +69,7 @@ RUN /build/secure-base.sh && \
 
 RUN mkdir -p /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
 
-COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}0/etc/php/${PHP_MAJOR_VERSION}.0/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
+COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}1/etc/php/${PHP_MAJOR_VERSION}.1/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
 COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/bin/wp"]
 
 EXPOSE 7080
