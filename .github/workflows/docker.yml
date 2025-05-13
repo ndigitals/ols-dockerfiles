@@ -8,7 +8,7 @@ on:
 
 env:
   OLS_VERSION: '1.8.3'
-  PHP_STABLE_VERSION: '8.3.12'
+  PHP_STABLE_VERSION: '8.3.21'
   NODE_STABLE_VERSION: '20'
   REGISTRY: ghcr.io
 
@@ -22,8 +22,8 @@ jobs:
           - '8.0.30'
           - '8.1.32'
           - '8.2.28'
-          - '8.3.20'
-          - '8.4.6'
+          - '8.3.21'
+          - '8.4.7'
         NODE_VERSION:
           - '16'
           - '18'
@@ -226,7 +226,7 @@ jobs:
 
       # https://github.com/marketplace/actions/create-release
       - name: Create Release
-        uses: ncipollo/release-action@v1.14.0
+        uses: ncipollo/release-action@v1.16.0
         if: github.event_name == 'push'
         with:
           name: ${{ steps.release-name.outputs.RELEASE_NAME }}
