@@ -2,22 +2,37 @@
 
 [![release-build](https://github.com/ndigitals/ols-dockerfiles/actions/workflows/docker.yml/badge.svg?branch=main)](https://github.com/ndigitals/ols-dockerfiles/actions/workflows/docker.yml)
 
-Install a lightweight OpenLiteSpeed container using the Stable version in Debian 11 Linux on arm64.
+Install a lightweight OpenLiteSpeed container using the Latest version in Debian 11 Linux on arm64.
 
 ## Supported tags
 
-- `1.7.19-lsphp83-node20`, `1.7.19-lsphp83`, `1.7-lsphp83-node20`, `1.7-lsphp83`, `1-lsphp83-node20`, `1-lsphp83`, `lsphp83-node20`, `lsphp83`
-- `1.7.19-lsphp83-node18`, `1.7-lsphp83-node18`, `1-lsphp83-node18`, `lsphp83-node18`
-- `1.7.19-lsphp83-node16`, `1.7-lsphp83-node16`, `1-lsphp83-node16`, `lsphp83-node16`
-- `1.7.19-lsphp82-node20`, `1.7.19-lsphp82`, `1.7-lsphp82-node20`, `1.7-lsphp82`, `1-lsphp82-node20`, `1-lsphp82`, `lsphp82-node20`, `lsphp82`
-- `1.7.19-lsphp82-node18`, `1.7-lsphp82-node18`, `1-lsphp82-node18`, `lsphp82-node18`
-- `1.7.19-lsphp82-node16`, `1.7-lsphp82-node16`, `1-lsphp82-node16`, `lsphp82-node16`
-- `1.7.19-lsphp81-node20`, `1.7.19-lsphp81`, `1.7-lsphp81-node20`, `1.7-lsphp81`, `1-lsphp81-node20`, `1-lsphp81`, `lsphp81-node20`, `lsphp81`
-- `1.7.19-lsphp81-node18`, `1.7-lsphp81-node18`, `1-lsphp81-node18`, `lsphp81-node18`
-- `1.7.19-lsphp81-node16`, `1.7-lsphp81-node16`, `1-lsphp81-node16`, `lsphp81-node16`
-- `1.7.19-lsphp80-node20`, `1.7.19-lsphp80`, `1.7-lsphp80-node20`, `1.7-lsphp80`, `1-lsphp80-node20`, `1-lsphp80`, `lsphp80-node20`, `lsphp80`
-- `1.7.19-lsphp80-node18`, `1.7-lsphp80-node18`, `1-lsphp80-node18`, `lsphp80-node18`
-- `1.7.19-lsphp80-node16`, `1.7-lsphp80-node16`, `1-lsphp80-node16`, `lsphp80-node16`
+- `1.8.3-lsphp83-node20`, `1.8.3-lsphp83`, `1.8-lsphp83-node20`, `1.8-lsphp83`, `1-lsphp83-node20`, `1-lsphp83`, `lsphp83-node20`, `lsphp83`
+- `1.8.3-lsphp83-node18`, `1.8-lsphp83-node18`, `1-lsphp83-node18`, `lsphp83-node18`
+- `1.8.3-lsphp83-node16`, `1.8-lsphp83-node16`, `1-lsphp83-node16`, `lsphp83-node16`
+- `1.8.3-lsphp82-node20`, `1.8.3-lsphp82`, `1.8-lsphp82-node20`, `1.8-lsphp82`, `1-lsphp82-node20`, `1-lsphp82`, `lsphp82-node20`, `lsphp82`
+- `1.8.3-lsphp82-node18`, `1.8-lsphp82-node18`, `1-lsphp82-node18`, `lsphp82-node18`
+- `1.8.3-lsphp82-node16`, `1.8-lsphp82-node16`, `1-lsphp82-node16`, `lsphp82-node16`
+- `1.8.3-lsphp81-node20`, `1.8.3-lsphp81`, `1.8-lsphp81-node20`, `1.8-lsphp81`, `1-lsphp81-node20`, `1-lsphp81`, `lsphp81-node20`, `lsphp81`
+- `1.8.3-lsphp81-node18`, `1.8-lsphp81-node18`, `1-lsphp81-node18`, `lsphp81-node18`
+- `1.8.3-lsphp81-node16`, `1.8-lsphp81-node16`, `1-lsphp81-node16`, `lsphp81-node16`
+- `1.8.3-lsphp80-node20`, `1.8.3-lsphp80`, `1.8-lsphp80-node20`, `1.8-lsphp80`, `1-lsphp80-node20`, `1-lsphp80`, `lsphp80-node20`, `lsphp80`
+- `1.8.3-lsphp80-node18`, `1.8-lsphp80-node18`, `1-lsphp80-node18`, `lsphp80-node18`
+- `1.8.3-lsphp80-node16`, `1.8-lsphp80-node16`, `1-lsphp80-node16`, `lsphp80-node16`
+
+## Legacy Tags
+
+- `1.7.19-lsphp83-node20`, `1.7.19-lsphp83`, `1.7-lsphp83-node20`, `1.7-lsphp83`
+- `1.7.19-lsphp83-node18`, `1.7-lsphp83-node18`
+- `1.7.19-lsphp83-node16`, `1.7-lsphp83-node16`
+- `1.7.19-lsphp82-node20`, `1.7.19-lsphp82`, `1.7-lsphp82-node20`, `1.7-lsphp82`
+- `1.7.19-lsphp82-node18`, `1.7-lsphp82-node18`
+- `1.7.19-lsphp82-node16`, `1.7-lsphp82-node16`
+- `1.7.19-lsphp81-node20`, `1.7.19-lsphp81`, `1.7-lsphp81-node20`, `1.7-lsphp81`
+- `1.7.19-lsphp81-node18`, `1.7-lsphp81-node18`
+- `1.7.19-lsphp81-node16`, `1.7-lsphp81-node16`
+- `1.7.19-lsphp80-node20`, `1.7.19-lsphp80`, `1.7-lsphp80-node20`, `1.7-lsphp80`
+- `1.7.19-lsphp80-node18`, `1.7-lsphp80-node18`
+- `1.7.19-lsphp80-node16`, `1.7-lsphp80-node16`
 - `1.7.18-lsphp83`, `1.7.18-lsphp82`, `1.7.18-lsphp81`, `1.7.18-lsphp80`
 - `1.7.17-lsphp82`, `1.7.17-lsphp81`, `1.7.17-lsphp80`
 - `1.7.16-lsphp82`, `1.7.16-lsphp81`, `1.7.16-lsphp80`
@@ -33,7 +48,7 @@ The system will regulary build the OpenLiteSpeed Latest stable version, along wi
 |   Component   |                                   Version                                    |
 | :-----------: | :--------------------------------------------------------------------------: |
 |     Linux     |                                  Debian 11                                   |
-| OpenLiteSpeed | [Latest stable version](https://openlitespeed.org/release-log/version-1-7-x) |
+| OpenLiteSpeed | [Latest version](https://openlitespeed.org/release-log/version-1-8-x) |
 |      PHP      |            [Latest stable version](https://www.php.net/downloads)            |
 
 ## Usage
@@ -49,7 +64,7 @@ docker pull ghcr.io/ndigitals/openlitespeed:latest
 or specify the OpenLiteSpeed version with lsphp version
 
 ```shell
-docker pull ghcr.io/ndigitals/openlitespeed:1.7-lsphp82
+docker pull ghcr.io/ndigitals/openlitespeed:1.8-lsphp82
 ```
 
 ### Start a Container
