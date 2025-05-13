@@ -20,7 +20,7 @@ ARG NODE_VERSION
 
 FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}1 AS ols
 
-FROM debian:11-slim
+FROM debian:bookworm-20230814-slim
 
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles/pkgs/container/openlitespeed
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
