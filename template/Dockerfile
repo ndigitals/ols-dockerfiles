@@ -1,41 +1,43 @@
-ARG OLS_VERSION
-ARG PHP_VERSION
-ARG PHP_MAJOR_VERSION
-ARG PHP_MINOR_VERSION
-ARG OLS_ADMIN_PHP_VERSION
-ARG OLS_ADMIN_PHP_MAJOR_VERSION
-ARG OLS_ADMIN_PHP_MINOR_VERSION
-ARG NODE_VERSION
+ARG OLS_VERSION="1.8.5"
+ARG PHP_VERSION="8.3.30"
+ARG PHP_MAJOR_VERSION="8"
+ARG PHP_MINOR_VERSION="3"
+ARG OLS_ADMIN_PHP_VERSION="8.3.30"
+ARG OLS_ADMIN_PHP_MAJOR_VERSION="8"
+ARG OLS_ADMIN_PHP_MINOR_VERSION="3"
+ARG NODE_VERSION="22"
 
 FROM wordpress:cli-php${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION} AS wp-cli
 
-ARG OLS_VERSION
-ARG PHP_VERSION
-ARG PHP_MAJOR_VERSION
-ARG PHP_MINOR_VERSION
-ARG OLS_ADMIN_PHP_VERSION
-ARG OLS_ADMIN_PHP_MAJOR_VERSION
-ARG OLS_ADMIN_PHP_MINOR_VERSION
-ARG NODE_VERSION
+ARG OLS_VERSION="1.8.5"
+ARG PHP_VERSION="8.3.30"
+ARG PHP_MAJOR_VERSION="8"
+ARG PHP_MINOR_VERSION="3"
+ARG OLS_ADMIN_PHP_VERSION="8.3.30"
+ARG OLS_ADMIN_PHP_MAJOR_VERSION="8"
+ARG OLS_ADMIN_PHP_MINOR_VERSION="3"
+ARG NODE_VERSION="22"
 
-FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}1 AS ols
+FROM litespeedtech/openlitespeed:${OLS_VERSION}-lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION} AS ols
 
-FROM debian:11-slim
+FROM debian:bookworm-slim
 
+LABEL org.opencontainers.image.authors="Tim Nolte <support@ndigitals.com>"
 LABEL org.opencontainers.image.url=https://github.com/ndigitals/ols-dockerfiles/pkgs/container/openlitespeed
+LABEL org.opencontainers.image.description="ARM64 builds of the OpenLiteSpeed web server with supported PHP & NodeJS versions"
 LABEL org.opencontainers.image.documentation=https://github.com/ndigitals/ols-dockerfiles/wiki
 LABEL org.opencontainers.image.source=https://github.com/ndigitals/ols-dockerfiles
 LABEL org.opencontainers.image.vendor="Nolte Digital Solutions"
 LABEL org.opencontainers.image.licenses=MIT
 
-ARG OLS_VERSION
-ARG PHP_VERSION
-ARG PHP_MAJOR_VERSION
-ARG PHP_MINOR_VERSION
-ARG OLS_ADMIN_PHP_VERSION
-ARG OLS_ADMIN_PHP_MAJOR_VERSION
-ARG OLS_ADMIN_PHP_MINOR_VERSION
-ARG NODE_VERSION
+ARG OLS_VERSION="1.8.5"
+ARG PHP_VERSION="8.3.30"
+ARG PHP_MAJOR_VERSION="8"
+ARG PHP_MINOR_VERSION="3"
+ARG OLS_ADMIN_PHP_VERSION="8.3.30"
+ARG OLS_ADMIN_PHP_MAJOR_VERSION="8"
+ARG OLS_ADMIN_PHP_MINOR_VERSION="3"
+ARG NODE_VERSION="22"
 
 ENV OLS_VERSION=${OLS_VERSION}
 ENV PHP_VERSION=${PHP_VERSION}
@@ -69,7 +71,7 @@ RUN /build/secure-base.sh && \
 
 RUN mkdir -p /usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/
 
-COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}1/etc/php/${PHP_MAJOR_VERSION}.1/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
+COPY --from=ols ["/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/", "/usr/local/lsws/lsphp${PHP_MAJOR_VERSION}${PHP_MINOR_VERSION}/etc/php/${PHP_MAJOR_VERSION}.${PHP_MINOR_VERSION}/"]
 COPY --from=wp-cli ["/usr/local/bin/wp", "/usr/bin/wp"]
 
 EXPOSE 7080
