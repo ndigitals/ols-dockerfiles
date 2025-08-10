@@ -6,15 +6,24 @@ Install a lightweight OpenLiteSpeed container using the Latest version in Debian
 
 ## Supported tags
 
+- `1.8.3-lsphp84-node22`, `1.8-lsphp84-node22`, `1-lsphp84-node22`, `lsphp84-node22`
+- `1.8.3-lsphp84-node20`, `1.8-lsphp84-node20`, `1.8-lsphp84`, `1-lsphp84-node20`, `1-lsphp84`, `lsphp84-node20`, `lsphp84`
+- `1.8.3-lsphp84-node18`, `1.8-lsphp84-node18`, `1-lsphp84-node18`, `lsphp84-node18`
+- `1.8.3-lsphp84-node16`, `1.8-lsphp84-node16`, `1-lsphp84-node16`, `lsphp84-node16`
+- `1.8.3-lsphp83-node22`, `1.8-lsphp83-node22`, `1-lsphp83-node22`, `lsphp83-node22`
 - `1.8.3-lsphp83-node20`, `1.8.3-lsphp83`, `1.8-lsphp83-node20`, `1.8-lsphp83`, `1-lsphp83-node20`, `1-lsphp83`, `lsphp83-node20`, `lsphp83`
 - `1.8.3-lsphp83-node18`, `1.8-lsphp83-node18`, `1-lsphp83-node18`, `lsphp83-node18`
 - `1.8.3-lsphp83-node16`, `1.8-lsphp83-node16`, `1-lsphp83-node16`, `lsphp83-node16`
+- `1.8.3-lsphp82-node22`, `1.8-lsphp82-node22`, `1-lsphp82-node22`, `lsphp82-node22`
+- `1.8.3-lsphp82-node22`, `1.8-lsphp82-node22`, `1-lsphp82-node22`, `lsphp82-node22`
 - `1.8.3-lsphp82-node20`, `1.8.3-lsphp82`, `1.8-lsphp82-node20`, `1.8-lsphp82`, `1-lsphp82-node20`, `1-lsphp82`, `lsphp82-node20`, `lsphp82`
 - `1.8.3-lsphp82-node18`, `1.8-lsphp82-node18`, `1-lsphp82-node18`, `lsphp82-node18`
 - `1.8.3-lsphp82-node16`, `1.8-lsphp82-node16`, `1-lsphp82-node16`, `lsphp82-node16`
+- `1.8.3-lsphp81-node22`, `1.8-lsphp81-node22`, `1-lsphp81-node22`, `lsphp81-node22`
 - `1.8.3-lsphp81-node20`, `1.8.3-lsphp81`, `1.8-lsphp81-node20`, `1.8-lsphp81`, `1-lsphp81-node20`, `1-lsphp81`, `lsphp81-node20`, `lsphp81`
 - `1.8.3-lsphp81-node18`, `1.8-lsphp81-node18`, `1-lsphp81-node18`, `lsphp81-node18`
 - `1.8.3-lsphp81-node16`, `1.8-lsphp81-node16`, `1-lsphp81-node16`, `lsphp81-node16`
+- `1.8.3-lsphp80-node22`, `1.8-lsphp80-node22`, `1-lsphp80-node22`, `lsphp80-node22`
 - `1.8.3-lsphp80-node20`, `1.8.3-lsphp80`, `1.8-lsphp80-node20`, `1.8-lsphp80`, `1-lsphp80-node20`, `1-lsphp80`, `lsphp80-node20`, `lsphp80`
 - `1.8.3-lsphp80-node18`, `1.8-lsphp80-node18`, `1-lsphp80-node18`, `lsphp80-node18`
 - `1.8.3-lsphp80-node16`, `1.8-lsphp80-node16`, `1-lsphp80-node16`, `lsphp80-node16`
