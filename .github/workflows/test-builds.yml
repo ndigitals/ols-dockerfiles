@@ -7,24 +7,21 @@ on:
       - develop
 
 env:
-  OLS_VERSION: '1.8.3'
+  OLS_VERSION: '1.8.5'
   REGISTRY: ghcr.io
 
 jobs:
   buildx:
-    runs-on: self-hosted
+    runs-on: ubuntu-22.04-arm
     strategy:
       fail-fast: false
       matrix: 
         PHP_VERSION:
-          - '8.1.32'
-          - '8.2.28'
-          - '8.3.21'
-          - '8.4.7'
+          - '8.2.30'
+          - '8.4.17'
         NODE_VERSION:
           - '18'
-          - '20'
-          - '22'
+          - '24'
 
     steps:
       - name: Checkout
@@ -80,14 +77,27 @@ jobs:
       - name: Test Docker Image
         run: |
           IMAGE=openlitespeed:${{ env.OLS_VERSION }}-lsphp${{ steps.php-version.outputs._0 }}${{ steps.php-version.outputs._1 }}-node${{ matrix.NODE_VERSION }}
-          echo -e 'Testing PHP Info Site...'
+          echo -e "::group::Testing PHP Info Site"
+          echo -e '...starting Docker image...'
           ID=$(docker run -d ${IMAGE})
-          sleep 5s
+          echo -e '...waiting for Docker image to startup...'
+          until [[ "`docker inspect -f {{.State.Running}} ${ID}`" == "true" ]]; do
+              sleep 0.1
+          done
+          echo -e '...adding phpinfo test script, and restarting lsws service...'
           docker exec -i ${ID} su -c 'mkdir -p /var/www/vhosts/localhost/html/ && echo "<?php phpinfo();" > /var/www/vhosts/localhost/html/index.php && service lsws restart'
+          until [[ "`docker inspect -f {{.State.Running}} ${ID}`" == "true" ]]; do
+              sleep 0.1
+          done
+          echo -e '...testing HTTP response from within Docker contianer...'
           HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -IkL -w "%{http_code}" http://localhost')
+          echo -e '...testing HTTPS response from within Docker contianer...'
           HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" https://localhost')
+          echo -e '...terminating Docker contianer...'
           docker kill ${ID} &>/dev/null
+          echo -e '...removing Docker container...'
           docker rm ${ID} &>/dev/null
+          echo -e '...validating results...'
           if [[ "${HTTP}" != "200" || "${HTTPS}" != "200" ]]; then
               echo -e '[\u2718] Test failed!'
               echo "http://localhost returned ${HTTP}"
@@ -97,13 +107,23 @@ jobs:
           else
               echo -e '[\u2714] Tests passed!'
           fi
-          echo -e 'Testing OLS Admin Control Panel...'
+          echo -e "::endgroup::"
+          echo -e "::group::Testing OLS Admin Control Panel"
+          echo -e '...starting Docker image...'
           ID=$(docker run -d ${IMAGE})
-          sleep 5s
+          echo -e '...waiting for Docker image to startup...'
+          until [[ "`docker inspect -f {{.State.Running}} ${ID}`" == "true" ]]; do
+              sleep 0.1
+          done
+          echo -e '...testing HTTP response of Admin Control Panel from within Docker contianer...'
           HTTP=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -IkL -w "%{http_code}" "http://localhost:7080/login.php?timedout=1#view/confMgr.php?m=tp_docker&p=ext"')
+          echo -e '...testing HTTPS response of Admin Control Panel from within Docker contianer...'
           HTTPS=$(docker exec -i ${ID} su -c 'curl -s -o /dev/null -Ik -w "%{http_code}" "https://localhost:7080/login.php?timedout=1#view/confMgr.php?m=tp_docker&p=ext"')
+          echo -e '...terminating Docker contianer...'
           docker kill ${ID} &>/dev/null
+          echo -e '...removing Docker container...'
           docker rm ${ID} &>/dev/null
+          echo -e '...validating results...'
           if [[ "${HTTP}" != "200" || "${HTTPS}" != "200" ]]; then
               echo -e '[\u2718] Test failed!'
               echo "http://localhost returned ${HTTP}"
@@ -115,4 +135,5 @@ jobs:
           fi
           echo -e 'Cleaning Up Test Image...'
           docker rmi ${IMAGE} &>/dev/null
+          echo -e "::endgroup::"
 
